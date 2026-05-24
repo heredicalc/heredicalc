@@ -93,9 +93,12 @@ class PluginRegistry:
     # ------------------------------------------------------------------
 
     def discover_builtins(self) -> None:
-        """Register all built-in plugins from heredicalc.plugins."""
+        """Register all built-in plugins from heredicalc.plugins._BUILTIN_PLUGINS."""
         try:
-            import heredicalc.plugins as _builtins  # noqa: F401
+            import heredicalc.plugins as _builtins
+
+            for plugin_class in _builtins._BUILTIN_PLUGINS:
+                self.register(plugin_class, source="builtin")
         except ImportError as exc:
             logger.warning("Could not import heredicalc.plugins: %s", exc)
 
