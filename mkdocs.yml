@@ -1,0 +1,64 @@
+site_name: HerediCalc
+site_description: Full Likelihood Bayes factor computation for hereditary cosegregation analysis
+site_url: https://heredicalc.readthedocs.io
+repo_url: https://github.com/heredicalc/heredicalc
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: teal
+      accent: teal
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - toc.integrate
+    - content.code.copy
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [src]
+  - mkdocs-jupyter:
+      include: ["tutorials/*.ipynb"]
+
+markdown_extensions:
+  - admonition
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - pymdownx.details
+  - pymdownx.arithmatex:
+      generic: true
+  - toc:
+      permalink: true
+
+extra_javascript:
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+
+nav:
+  - Home: index.md
+  - User Guide:
+    - CLI: user-guide/cli.md
+    - Configuration: user-guide/config-file.md
+    - Desktop GUI: user-guide/gui.md
+    - Web App: user-guide/web.md
+  - Tutorials:
+    - User Tutorial: tutorials/user-tutorial.md
+    - Plugin Developer Tutorial: tutorials/plugin-developer-tutorial.md
+  - Algorithms:
+    - Competing-Risk Model: algorithms/competing-risk-model.md
+    - FLB Computation: algorithms/flb-computation.md
+  - Plugins:
+    - Writing Plugins: plugins/writing-plugins.md
+    - Plugin Kinds: plugins/plugin-kinds.md
+    - Plugin Dependencies: plugins/plugin-dependencies.md
+    - Copy-In System: plugins/copy-in-system.md
+    - Version Constraints: plugins/version-constraints.md
+  - Management (Phase 4):
+    - Pedigree Library: management/pedigree-library.md
+    - Model Editor: management/model-editor.md
+  - API Reference: api/index.md
