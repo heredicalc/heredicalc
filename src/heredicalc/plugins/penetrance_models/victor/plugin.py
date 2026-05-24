@@ -71,8 +71,14 @@ class VictorPenetranceModel:
         rows: list[PenetranceRow] = []
 
         for sex in sexes:
-            sub = hazards[hazards["sex"] == sex].copy()
-            phenotype_names = [p for p in sub["phenotype"].unique()]
+            # Aggregate by (phenotype, age) in case of duplicate rows
+            sub_all = hazards[hazards["sex"] == sex].copy()
+            sub = (
+                sub_all.groupby(["phenotype", "age"], observed=True)["lambda_pop"]
+                .sum()
+                .reset_index()
+            )
+            phenotype_names = list(sub["phenotype"].unique())
 
             # Build lambda arrays: age × phenotype → {nc, het, hom}
             lambda_nc = np.zeros((100, len(phenotype_names)))
@@ -83,7 +89,8 @@ class VictorPenetranceModel:
             for j, pheno in enumerate(phenotype_names):
                 age_series = sub[sub["phenotype"] == pheno].set_index("age")["lambda_pop"]
                 for a in range(100):
-                    lp = age_series.get(a, 0.0)
+                    val = age_series.get(a, 0.0)
+                    lp = float(val) if not hasattr(val, "__len__") else float(val.iloc[0])
                     lambda_pop_arr[a, j] = lp
 
                     if pheno == _OTHER:
