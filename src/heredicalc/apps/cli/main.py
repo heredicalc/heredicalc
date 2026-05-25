@@ -81,6 +81,7 @@ def run(
     phenotype_model: Annotated[Optional[str], typer.Option(help="Phenotype model plugin.")] = None,
     trait_mapper: Annotated[Optional[str], typer.Option(help="Trait mapper plugin.")] = None,
     penetrance_model: Annotated[Optional[str], typer.Option(help="Penetrance model plugin.")] = None,
+    hazard_model: Annotated[Optional[str], typer.Option(help="Hazard model plugin.")] = None,
     output_format: Annotated[str, typer.Option("--format", help="Output format: json, text.")] = "text",
     verbose: Annotated[bool, typer.Option("--verbose", "-v")] = False,
 ) -> None:
@@ -96,6 +97,7 @@ def run(
         phenotype_model=phenotype_model,
         trait_mapper=trait_mapper,
         penetrance_model=penetrance_model,
+        hazard_model=hazard_model,
     )
 
     try:
