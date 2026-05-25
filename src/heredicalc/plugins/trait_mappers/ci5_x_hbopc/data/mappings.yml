@@ -1,0 +1,11 @@
+trait_mappings:
+  "113": "BreastCancer"
+  "133": "OvarianCancer"
+  "070": "PancreaticCancer"
+
+affection_mappings:
+  "BrCa":  "BreastCancer"
+  "OvCa":  "OvarianCancer"
+  "PanCa": "PancreaticCancer"
+  "unaff": null
+  ".":     null
