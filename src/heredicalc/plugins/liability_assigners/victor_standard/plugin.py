@@ -36,7 +36,7 @@ class VictorStandardLiabilityAssigner:
         author="HerediCalc",
         min_api_version="1.0.0",
         compatible_with={
-            "penetrance_model": ["victor"],
+            "penetrance_model": ["victor", "victor_cool3"],
             "flb_calculator": ["segregatr"],
         },
     )
