@@ -66,7 +66,7 @@ def _dtype_matches(dtype: object, expected: str) -> bool:
     if expected == "category":
         return dtype_str == "category"
     if expected == "object":
-        return dtype_str in ("object", "string")
+        return dtype_str in ("object", "string", "str")
     if expected == "int64":
         return dtype_str in ("int64", "Int64")
     if expected == "float64":
