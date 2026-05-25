@@ -8,6 +8,7 @@ from typing import Literal
 
 import pandas as pd
 
+from heredicalc.core.app_dirs import user_traits_dir
 from heredicalc.core.models.plugin import PluginMeta
 
 _DATA = _files(__package__) / "data"
@@ -41,21 +42,22 @@ class TabularRRModel:
     def _load_gene(self, genetic_entity: str) -> pd.DataFrame | None:
         """Load and cache RR table for *genetic_entity*.
 
-        Returns None if the CSV is empty (stub like BRCA2.csv).
-        Raises FileNotFoundError if no CSV exists for the gene.
+        Checks the user traits directory first, then falls back to bundled data.
+        Returns None if the resolved CSV is empty.
+        Raises KeyError if no CSV exists anywhere for the gene.
         """
         if genetic_entity not in self._cache:
-            csv_path = Path(str(_DATA / f"{genetic_entity}.csv"))
-            if not csv_path.exists():
-                raise FileNotFoundError(
-                    f"No RR table found for {genetic_entity!r} at {csv_path}. "
-                    "Ensure the gene CSV is bundled in the data directory."
-                )
-            if csv_path.stat().st_size == 0:
-                self._cache[genetic_entity] = None
+            user_path = user_traits_dir() / "rr" / f"{genetic_entity}.csv"
+            if user_path.exists() and user_path.stat().st_size > 0:
+                self._cache[genetic_entity] = pd.read_csv(user_path)
             else:
-                df = pd.read_csv(csv_path)
-                self._cache[genetic_entity] = df
+                bundled = Path(str(_DATA / f"{genetic_entity}.csv"))
+                if not bundled.exists() or bundled.stat().st_size == 0:
+                    raise KeyError(
+                        f"No RR data for {genetic_entity!r}. "
+                        f"Use 'heredicalc add trait {genetic_entity}' to add it."
+                    )
+                self._cache[genetic_entity] = pd.read_csv(bundled)
         return self._cache[genetic_entity]
 
     def get_rr(
@@ -72,10 +74,6 @@ class TabularRRModel:
         :raises KeyError: If *genetic_entity* has an empty/stub CSV (no data).
         """
         df = self._load_gene(genetic_entity)
-        if df is None:
-            raise KeyError(
-                f"RR table for {genetic_entity!r} is an empty stub — no data available."
-            )
 
         gender_col = self._SEX_MAP.get(sex, "M")
         col = "heterozygous_rr" if genotype == "het" else "homozygous_rr"

@@ -9,6 +9,7 @@ from typing import Literal
 import pandas as pd
 
 from heredicalc.core.models.plugin import PluginMeta
+from heredicalc.core.trait_manifest import load_manifest
 
 _DATA = _files(__package__) / "data"
 
@@ -37,6 +38,8 @@ class LookupCRHFModel:
             csv_path = Path(str(_DATA / "genes.csv"))
             df = pd.read_csv(csv_path)
             self._table = dict(zip(df["gene"], df["crhf_value"].astype(float)))
+            for entry in load_manifest():
+                self._table[entry["name"]] = float(entry["crhf_value"])
         return self._table
 
     def get_crhf(
