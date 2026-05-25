@@ -61,15 +61,15 @@ class TestTabularRRModelBRCA1:
 
 
 class TestTabularRRModelStubs:
-    def test_brca2_empty_stub_raises_key_error(self) -> None:
+    def test_unknown_gene_raises_key_error(self) -> None:
         rr = TabularRRModel()
-        with pytest.raises(KeyError, match="empty stub"):
-            rr.get_rr("BRCA2", "F", 40, "BreastCancer", "het")
-
-    def test_unknown_gene_raises_file_not_found(self) -> None:
-        rr = TabularRRModel()
-        with pytest.raises(FileNotFoundError, match="No RR table"):
+        with pytest.raises(KeyError, match="No RR data"):
             rr.get_rr("UNKNOWNGENE", "F", 40, "BreastCancer", "het")
+
+    def test_unknown_gene_error_mentions_add_trait(self) -> None:
+        rr = TabularRRModel()
+        with pytest.raises(KeyError, match="add trait"):
+            rr.get_rr("UNKNOWNGENE2", "F", 40, "BreastCancer", "het")
 
     def test_cache_reuse(self) -> None:
         rr = TabularRRModel()
