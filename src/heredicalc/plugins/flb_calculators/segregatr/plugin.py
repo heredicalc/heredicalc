@@ -33,7 +33,7 @@ class SegregatrFLBCalculator:
         author="HerediCalc",
         min_api_version="1.0.0",
         compatible_with={
-            "penetrance_model": ["victor"],
+            "penetrance_model": ["victor", "victor_cool3"],
         },
     )
 
@@ -106,18 +106,20 @@ def _write_pedigree_tsv(pedigree: Pedigree, liability_map: dict[int, int]) -> Pa
     fd, path_str = tempfile.mkstemp(suffix="_pedigree.tsv", prefix="heredicalc_")
     path = Path(path_str)
     lines = [
-        "individual_id\tfather_id\tmother_id\tsex_code\tis_affected\tgenotype\tliability_class"
+        "individual_id\tfather_id\tmother_id\tsex_code\tis_affected\tis_proband\taffection_known\tgenotype\tliability_class"
     ]
     for m in pedigree.members:
         sex_code = 1 if m.sex == "M" else (2 if m.sex == "F" else 1)
         is_affected = 1 if m.is_affected else 0
+        is_proband = 1 if m.is_proband else 0
+        affection_known = 1 if m.affection_known else 0
         genotype = m.genotype if m.genotype else "NA"
         father_id = m.father_id if m.father_id is not None else 0
         mother_id = m.mother_id if m.mother_id is not None else 0
         liability_class = liability_map[m.individual_id]
         lines.append(
             f"{m.individual_id}\t{father_id}\t{mother_id}\t{sex_code}\t"
-            f"{is_affected}\t{genotype}\t{liability_class}"
+            f"{is_affected}\t{is_proband}\t{affection_known}\t{genotype}\t{liability_class}"
         )
     import os
 

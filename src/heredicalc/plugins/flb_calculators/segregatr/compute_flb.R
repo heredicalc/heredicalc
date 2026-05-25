@@ -3,7 +3,7 @@
 #
 # Arguments (positional):
 #   1: pedigree TSV file (individual_id, father_id, mother_id, sex_code,
-#                         is_affected, genotype, liability_class)
+#                         is_affected, is_proband, genotype, liability_class)
 #   2: penetrance TSV file (rows = liability classes, columns = penetrance_nc,
 #                           penetrance_het, penetrance_hom)
 #   3: allele frequency (numeric)
@@ -34,7 +34,6 @@ ped_data <- read.table(
 )
 
 # ----- Create pedtools pedigree -----
-# sex_code: 1=male, 2=female; founder parents are 0 (pedtools uses 0 for founders)
 x <- pedtools::ped(
   id  = ped_data$individual_id,
   fid = ped_data$father_id,
@@ -42,26 +41,23 @@ x <- pedtools::ped(
   sex = ped_data$sex_code
 )
 
-# ----- Add genotype marker -----
-# Alleles: 1 = wildtype, 2 = carrier (variant)
-n_members <- nrow(ped_data)
-geno_vec <- rep(NA_character_, n_members)
-for (i in seq_len(n_members)) {
-  g <- ped_data$genotype[i]
-  if (!is.na(g) && g == "Het") {
-    geno_vec[i] <- "1/2"
-  } else if (!is.na(g) && g == "Neg") {
-    geno_vec[i] <- "1/1"
-  }
-  # Unknown genotype: NA (not typed)
-}
+# ----- Build genotype vectors (IDs as character strings) -----
+ids <- as.character(ped_data$individual_id)
+carriers    <- ids[!is.na(ped_data$genotype) & ped_data$genotype == "Het"]
+homozygous  <- ids[!is.na(ped_data$genotype) & ped_data$genotype == "Hom"]
+noncarriers <- ids[!is.na(ped_data$genotype) & ped_data$genotype == "Neg"]
 
-x <- pedtools::addMarker(
-  x,
-  geno    = geno_vec,
-  alleles = c("1", "2"),
-  afreq   = c(1 - freq_val, freq_val)
-)
+# ----- Affection status -----
+# affection_known=0 means "." in COOL3 (unknown); affection_known=1 means unaff or affected
+affected_ids <- ids[ped_data$is_affected == 1]
+unknown_ids  <- ids[ped_data$affection_known == 0]
+
+# ----- Proband -----
+proband_ids <- ids[ped_data$is_proband == 1]
+if (length(proband_ids) != 1) {
+  stop(sprintf("Expected exactly one proband, got %d", length(proband_ids)))
+}
+proband_id <- proband_ids[1]
 
 # ----- Read penetrance table -----
 pen_data <- read.table(
@@ -75,20 +71,21 @@ penetrances <- as.matrix(
 )
 
 # ----- Build liability vector (1-based for R) -----
-# liability_class from Python is 0-based; R expects 1-based
 liability_vec <- ped_data$liability_class + 1L
-names(liability_vec) <- as.character(ped_data$individual_id)
-
-# ----- Identify affected individuals -----
-affected_ids <- ped_data$individual_id[ped_data$is_affected == 1]
+names(liability_vec) <- ids
 
 # ----- Compute FLB -----
 flb_val <- segregatr::FLB(
   x           = x,
+  carriers    = carriers,
+  homozygous  = homozygous,
+  noncarriers = noncarriers,
+  freq        = freq_val,
   affected    = affected_ids,
-  liability   = liability_vec,
+  unknown     = unknown_ids,
+  proband     = proband_id,
   penetrances = penetrances,
-  freq        = freq_val
+  liability   = liability_vec
 )
 
 # ----- Output JSON -----
