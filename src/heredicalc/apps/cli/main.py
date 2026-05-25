@@ -171,7 +171,12 @@ def batch(
 
 
 @app.command()
-def init() -> None:
+def init(
+    output: Annotated[
+        Path,
+        typer.Option("--output", "-o", help="Output path for the generated config file."),
+    ] = Path("heredicalc.yml"),
+) -> None:
     """Interactively generate a heredicalc.yml configuration file."""
     console.print("[bold]HerediCalc configuration generator[/bold]")
     registry = _build_registry()
@@ -200,10 +205,13 @@ def init() -> None:
         },
     }
 
-    out_path = Path("heredicalc.yml")
-    with open(out_path, "w", encoding="utf-8") as f:
+    if output.exists():
+        overwrite = typer.confirm(f"{output} already exists. Overwrite?", default=False)
+        if not overwrite:
+            raise typer.Exit(code=0)
+    with open(output, "w", encoding="utf-8") as f:
         yaml.dump(config, f, default_flow_style=False, sort_keys=False)
-    console.print(f"[green]Config written to {out_path}[/green]")
+    console.print(f"[green]Config written to {output}[/green]")
 
 
 plugins_app = typer.Typer(help="Manage HerediCalc plugins.")

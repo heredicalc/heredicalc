@@ -111,12 +111,25 @@ Failed pedigrees are included with `flb: null` and the error message.
 Interactively generate a `heredicalc.yml` configuration file.
 
 ```
-heredicalc init
+heredicalc init [OPTIONS]
 ```
 
+| Option | Type | Description |
+|--------|------|-------------|
+| `--output`, `-o` | path | Output file path (default: `heredicalc.yml`) |
+
 Prompts for genetic entity, allele frequency, incidence source, population, and age
-bands, then writes `heredicalc.yml` in the current directory. The trait mapper is
-automatically derived from the chosen incidence source (e.g. `ci5_ix` → `ci5_ix_hbopc`).
+bands, then writes the config file. The trait mapper is automatically derived from
+the chosen incidence source (e.g. `ci5_ix` → `ci5_ix_hbopc`). If the output file
+already exists, a confirmation prompt is shown before overwriting.
+
+```bash
+# Write to default heredicalc.yml
+heredicalc init
+
+# Write to a custom path
+heredicalc init --output configs/brca1_latvia.yml
+```
 
 ---
 
