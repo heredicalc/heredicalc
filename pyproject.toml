@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "heredicalc"
-version = "4.0.0"
+version = "4.1.0"
 description = "Full Likelihood Bayes factor computation for hereditary cosegregation analysis"
 readme = "README.md"
 license = { text = "MIT" }
