@@ -15,6 +15,7 @@ from typing import Annotated, Any, Optional
 
 import typer
 import yaml
+from importlib.metadata import version as _pkg_version
 from rich.console import Console
 from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.table import Table
@@ -31,6 +32,22 @@ app = typer.Typer(
     help="HerediCalc v4 — FLB factor for hereditary cosegregation analysis.",
     add_completion=False,
 )
+
+
+def _version_callback(value: bool) -> None:
+    if value:
+        typer.echo(_pkg_version("heredicalc"))
+        raise typer.Exit()
+
+
+@app.callback()
+def _main(
+    version: Annotated[
+        bool,
+        typer.Option("--version", "-V", callback=_version_callback, is_eager=True, help="Show version and exit."),
+    ] = False,
+) -> None:
+    pass
 console = Console()
 
 # ---------------------------------------------------------------------------
