@@ -74,10 +74,12 @@ This is the band-specific CIF increment — **not** the cumulative value $F_{j,g
 
 **Unaffected row** (one per age band):
 
-$$P_\text{unaffected}(g, [a_0, a_1]) = 1 - \sum_j P_\text{affected}(j, g, [a_0, a_1])$$
+$$P_\text{unaffected}(g, [a_0, a_1]) = S_g(a_1)$$
 
-The resulting table is MECE by construction: within each age band and genotype,
-affected rows (one per phenotype) plus unaffected row sum to 1.
+This is the all-cause survival probability at the band end — "P(still event-free through
+age $a_1$ | genotype $g$)". The implementation stores $1 - S_g(a_1)$; `segregatr`
+inverts unaffected penetrances internally, recovering $S_g(a_1)$ as the likelihood
+contribution for an unaffected member whose last follow-up was at age $a_1$.
 
 ## Competing Risks
 
