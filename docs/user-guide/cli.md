@@ -116,19 +116,29 @@ heredicalc init [OPTIONS]
 
 | Option | Type | Description |
 |--------|------|-------------|
-| `--output`, `-o` | path | Output file path (default: `heredicalc.yml`) |
+| `--output`, `-o` | path | Pre-fill the output path prompt (optional) |
 
 Prompts for genetic entity, allele frequency, incidence source, population, and age
-bands, then writes the config file. The trait mapper is automatically derived from
-the chosen incidence source (e.g. `ci5_ix` → `ci5_ix_hbopc`). If the output file
-already exists, a confirmation prompt is shown before overwriting.
+bands. The **last prompt** asks for the output file path:
+
+- Default: `heredicalc.yml` (or the value of `--output` if supplied)
+- Enter a custom path to write there
+- Leave empty to print the YAML to stdout
+
+The trait mapper is automatically derived from the incidence source
+(e.g. `ci5_ix` → `ci5_ix_hbopc`). If the output file already exists, a
+confirmation prompt is shown before overwriting.
 
 ```bash
-# Write to default heredicalc.yml
+# Interactive — last prompt asks for filename (default: heredicalc.yml)
 heredicalc init
 
-# Write to a custom path
-heredicalc init --output configs/brca1_latvia.yml
+# Pre-fill the filename prompt via -o
+heredicalc init -o configs/brca1_latvia.yml
+
+# Print to stdout (enter empty string at the filename prompt)
+heredicalc init
+# Output file [...]: <Enter>
 ```
 
 ---

@@ -173,9 +173,9 @@ def batch(
 @app.command()
 def init(
     output: Annotated[
-        Path,
-        typer.Option("--output", "-o", help="Output path for the generated config file."),
-    ] = Path("heredicalc.yml"),
+        Optional[Path],
+        typer.Option("--output", "-o", help="Output path (default: asked interactively)."),
+    ] = None,
 ) -> None:
     """Interactively generate a heredicalc.yml configuration file."""
     console.print("[bold]HerediCalc configuration generator[/bold]")
@@ -205,13 +205,26 @@ def init(
         },
     }
 
-    if output.exists():
-        overwrite = typer.confirm(f"{output} already exists. Overwrite?", default=False)
-        if not overwrite:
+    # Last step: ask for output destination
+    default_name = str(output) if output is not None else "heredicalc.yml"
+    dest_str = typer.prompt(
+        "Output file (leave empty to print to stdout)",
+        default=default_name,
+    )
+
+    yaml_text = yaml.dump(config, default_flow_style=False, sort_keys=False)
+
+    if not dest_str.strip():
+        typer.echo(yaml_text)
+        return
+
+    dest = Path(dest_str)
+    if dest.exists():
+        if not typer.confirm(f"{dest} already exists. Overwrite?", default=False):
+            console.print("[yellow]Aborted.[/yellow]")
             raise typer.Exit(code=0)
-    with open(output, "w", encoding="utf-8") as f:
-        yaml.dump(config, f, default_flow_style=False, sort_keys=False)
-    console.print(f"[green]Config written to {output}[/green]")
+    dest.write_text(yaml_text, encoding="utf-8")
+    console.print(f"[green]Config written to {dest}[/green]")
 
 
 plugins_app = typer.Typer(help="Manage HerediCalc plugins.")
