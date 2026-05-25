@@ -51,10 +51,13 @@ nav:
     - Plugin Developer Tutorial: tutorials/plugin-developer-tutorial.md
   - Algorithms:
     - Competing-Risk Model: algorithms/competing-risk-model.md
+    - VICTOR Model Tracks: algorithms/victor-model.md
     - FLB Computation: algorithms/flb-computation.md
   - Plugins:
     - Writing Plugins: plugins/writing-plugins.md
     - Plugin Kinds: plugins/plugin-kinds.md
+    - Penetrance Models: plugins/penetrance-models.md
+    - Trait Mappers: plugins/trait-mappers.md
     - Plugin Dependencies: plugins/plugin-dependencies.md
     - Copy-In System: plugins/copy-in-system.md
     - Version Constraints: plugins/version-constraints.md
