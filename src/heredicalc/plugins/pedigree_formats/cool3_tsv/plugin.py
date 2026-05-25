@@ -63,6 +63,7 @@ class Cool3TsvPedigreeFormat:
 
             affections: list[Affection] = []
             aff_stripped = aff.strip()
+            affection_known = aff_stripped not in (".", "")
             if aff_stripped not in (".", "unaff", ""):
                 affections = [Affection(phenotype=aff_stripped)]
 
@@ -76,6 +77,7 @@ class Cool3TsvPedigreeFormat:
                     age_last_contact=age_val,
                     genotype=geno_val,  # type: ignore[arg-type]
                     is_proband=is_proband,
+                    affection_known=affection_known,
                 )
             )
 

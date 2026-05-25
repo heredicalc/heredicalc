@@ -13,6 +13,10 @@ from heredicalc.core.pipeline.types import INCIDENCE_SCHEMA, validate_frame
 _DATA = _files(__package__) / "data"
 
 # Age group → (age_start, age_end). Group 18 extended to 99; group 19 excluded.
+# CI5-IX aggregate summary codes that must be excluded to avoid double-counting.
+# Code 001 = "All sites combined"; code 002 = "All sites excl. non-melanoma skin".
+_AGGREGATE_TRAITS: frozenset[str] = frozenset(["001", "002"])
+
 _AGE_GROUPS: dict[int, tuple[int, int]] = {
     1: (0, 4),
     2: (5, 9),
@@ -136,6 +140,7 @@ class CI5IXIncidenceSource:
         df["sex"] = df["sex"].map({1: "M", 2: "F"})
         df["trait"] = df["trait"].str.strip().str.zfill(3)
         df = df[df["person_years"] > 0].copy()
+        df = df[~df["trait"].isin(_AGGREGATE_TRAITS)].copy()
         df = df[["sex", "trait", "age_start", "age_end", "cases", "person_years"]].copy()
         df["sex"] = df["sex"].astype("category")
         df["age_start"] = df["age_start"].astype("int64")
