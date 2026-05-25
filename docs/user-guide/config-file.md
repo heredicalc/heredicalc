@@ -1,7 +1,7 @@
 # Configuration File
 
 HerediCalc is configured via a YAML file (default: `heredicalc.yml`). Use
-`heredicalc init` to generate a starter file interactively, or write one manually.
+`heredicalc add config` to generate a starter file interactively, or write one manually.
 
 ---
 
@@ -45,7 +45,7 @@ plugins:
 | Field | Type | Default | Description |
 |-------|------|---------|-------------|
 | `incidence_source` | string | — | CI5 edition: `ci5_viii`, `ci5_ix`, `ci5_x`, `ci5_xi`, `ci5_xii` |
-| `phenotype_model` | string | — | `hbopc` (breast, ovarian, pancreatic cancer) |
+| `phenotype_model` | string | — | `hbopc` (breast, ovarian, pancreatic cancer) or `hbopc_prca` (adds prostate cancer) |
 | `trait_mapper` | string | — | Must match incidence_source: e.g. `ci5_ix_hbopc` for `ci5_ix` |
 | `hazard_model` | string | `annual_rate` | `annual_rate` (correct) or `annual_rate_cool3` (COOL3-compatible) |
 | `penetrance_model` | string | `victor` | `victor` (correct) or `victor_cool3` (COOL3-compatible) |
@@ -118,10 +118,13 @@ heredicalc run pedigree.ped --config heredicalc.yml --population "Finland, Tampe
 The trait mapper must be compatible with the chosen incidence source.
 Mismatches are caught at startup with a `PluginCompatibilityError`.
 
-| `incidence_source` | `trait_mapper` |
-|--------------------|----------------|
-| `ci5_viii` | `ci5_viii_hbopc` |
-| `ci5_ix` | `ci5_ix_hbopc` |
-| `ci5_x` | `ci5_x_hbopc` |
-| `ci5_xi` | `ci5_xi_hbopc` |
-| `ci5_xii` | `ci5_xii_hbopc` |
+| `incidence_source` | `hbopc` mapper | `hbopc_prca` mapper |
+|--------------------|----------------|---------------------|
+| `ci5_viii` | `ci5_viii_hbopc` | `ci5_viii_hbopc_prca` |
+| `ci5_ix` | `ci5_ix_hbopc` | `ci5_ix_hbopc_prca` |
+| `ci5_x` | `ci5_x_hbopc` | `ci5_x_hbopc_prca` |
+| `ci5_xi` | `ci5_xi_hbopc` | `ci5_xi_hbopc_prca` |
+| `ci5_xii` | `ci5_xii_hbopc` | `ci5_xii_hbopc_prca` |
+
+Use the `hbopc_prca` mapper (with `phenotype_model: hbopc_prca`) when analysing genes
+associated with ProstateCancer, e.g. BRCA2 or HOXB13.
