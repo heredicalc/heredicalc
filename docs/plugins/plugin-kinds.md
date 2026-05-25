@@ -48,18 +48,25 @@ Loads population cancer incidence tables. Built-ins: **ci5_viii**, **ci5_ix**,
 ### `trait_mapper`
 
 Maps CI5 trait codes and pedigree affection codes to canonical phenotype names.
-Built-in: **ci5_hbopc**.
+One mapper per incidence-source × phenotype-model combination.
+Built-ins: **ci5_viii_hbopc**, **ci5_ix_hbopc**, **ci5_x_hbopc**, **ci5_xi_hbopc**,
+**ci5_xii_hbopc**.
 
 | Method | Contract |
 |--------|---------|
 | `map_trait(trait_code)` | CI5 code → canonical name or None (competing risk) |
 | `map_affection(raw)` | Pedigree code → canonical name or None |
 
+Each mapper is compatible with exactly one `incidence_source` edition (declared via
+`compatible_with`). Adding a new incidence source requires a new mapper plugin; no
+existing code is modified.
+
 ### `hazard_model`
 
-Converts raw incidence to yearly hazard rates. Built-in: **annual_rate**
-(rate = cases / person_years / band_width). Unmapped traits aggregate as
-`"OtherTrait"` (RR=1 in VICTOR).
+Converts raw incidence to yearly hazard rates.
+Built-ins: **annual_rate** (correct: cases / person_years / band_width),
+**annual_rate_cool3** (COOL3-compatible: cases / person_years, no band_width division).
+Unmapped traits aggregate as `"OtherTrait"` (RR=1 in VICTOR).
 
 | Method | Contract |
 |--------|---------|
@@ -67,7 +74,8 @@ Converts raw incidence to yearly hazard rates. Built-in: **annual_rate**
 
 ### `penetrance_model`
 
-Computes MECE penetrance output from hazard rates. Built-in: **victor**.
+Computes MECE penetrance output from hazard rates.
+Built-ins: **victor** (correct), **victor_cool3** (COOL3-compatible).
 Declares `requires = {"rr_model": None, "crhf_model": None}`.
 
 | Method | Contract |
