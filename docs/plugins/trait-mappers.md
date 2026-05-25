@@ -15,7 +15,7 @@ There is no shared cross-edition mapper.
 
 ## Built-In Mappers (HBOPC)
 
-All five built-in mappers cover the HBOPC phenotype model
+The five `hbopc` mappers cover the HBOPC phenotype model
 (Hereditary Breast, Ovarian, and Pancreatic Cancer).
 
 ### ICD Code Mapping
@@ -43,6 +43,47 @@ All other CI5 codes map to `None` — they are treated as competing-risk events
 
 ---
 
+## Built-In Mappers (HBOPC+PrCa)
+
+The five `hbopc_prca` mappers extend HBOPC with ProstateCancer (C61).
+Use with genes that have a prostate cancer association (e.g. BRCA2, HOXB13).
+Requires `phenotype_model: hbopc_prca`.
+
+### ICD Code Mapping
+
+| Plugin | Incidence source | Breast | Ovarian | Pancreatic | Prostate |
+|--------|-----------------|:------:|:-------:|:----------:|:--------:|
+| `ci5_viii_hbopc_prca` | `ci5_viii` | `"116"` | `"136"` | `"071"` | `"154"` |
+| `ci5_ix_hbopc_prca` | `ci5_ix` | `"113"` | `"133"` | `"070"` | `"151"` |
+| `ci5_x_hbopc_prca` | `ci5_x` | `"113"` | `"133"` | `"070"` | `"151"` |
+| `ci5_xi_hbopc_prca` | `ci5_xi` | `"111"` | `"130"` | `"065"` | `"147"` |
+| `ci5_xii_hbopc_prca` | `ci5_xii` | `"159"` | `"178"` | `"080"` | `"197"` |
+
+Prostate codes verified against CI5 cancer dictionaries (CI5-VIII, XI, XII)
+and empirically confirmed for CI5-IX/X (male-dominant, peak incidence age 70–75).
+
+### Affection Code Mapping (all editions identical)
+
+| Pedigree code | Canonical phenotype |
+|---------------|-------------------|
+| `BrCa` | `BreastCancer` |
+| `OvCa` | `OvarianCancer` |
+| `PanCa` | `PancreaticCancer` |
+| `PrCa` | `ProstateCancer` |
+| `unaff` | `None` (unaffected) |
+| `.` | `None` (unknown / not assessed) |
+
+**Configuration example (BRCA2, CI5-IX, Latvia):**
+
+```yaml
+plugins:
+  phenotype_model: hbopc_prca
+  incidence_source: ci5_ix
+  trait_mapper: ci5_ix_hbopc_prca
+```
+
+---
+
 ## Compatibility Enforcement
 
 Each mapper declares `compatible_with` in its metadata:
@@ -58,8 +99,9 @@ The registry raises a `PluginCompatibilityError` at startup if the configured
 `trait_mapper` does not match the active `incidence_source`. For example,
 using `ci5_ix_hbopc` with `incidence_source: ci5_x` is caught immediately.
 
-The `heredicalc init` command automatically derives the correct mapper name from
-the chosen incidence source: `{incidence_source}_hbopc`.
+The `heredicalc add config` command automatically derives the mapper name from
+the chosen incidence source: `{incidence_source}_hbopc` (use `hbopc_prca` variant manually
+when ProstateCancer tracking is needed).
 
 ---
 
@@ -71,13 +113,13 @@ plugins:
   trait_mapper: ci5_ix_hbopc   # must match incidence_source edition
 ```
 
-| `incidence_source` | `trait_mapper` |
-|--------------------|----------------|
-| `ci5_viii` | `ci5_viii_hbopc` |
-| `ci5_ix` | `ci5_ix_hbopc` |
-| `ci5_x` | `ci5_x_hbopc` |
-| `ci5_xi` | `ci5_xi_hbopc` |
-| `ci5_xii` | `ci5_xii_hbopc` |
+| `incidence_source` | `hbopc` mapper | `hbopc_prca` mapper |
+|--------------------|----------------|---------------------|
+| `ci5_viii` | `ci5_viii_hbopc` | `ci5_viii_hbopc_prca` |
+| `ci5_ix` | `ci5_ix_hbopc` | `ci5_ix_hbopc_prca` |
+| `ci5_x` | `ci5_x_hbopc` | `ci5_x_hbopc_prca` |
+| `ci5_xi` | `ci5_xi_hbopc` | `ci5_xi_hbopc_prca` |
+| `ci5_xii` | `ci5_xii_hbopc` | `ci5_xii_hbopc_prca` |
 
 ---
 
