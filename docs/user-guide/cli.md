@@ -106,12 +106,12 @@ Failed pedigrees are included with `flb: null` and the error message.
 
 ---
 
-## `heredicalc init`
+## `heredicalc add config`
 
 Interactively generate a `heredicalc.yml` configuration file.
 
 ```
-heredicalc init [OPTIONS]
+heredicalc add config [OPTIONS]
 ```
 
 | Option | Type | Description |
@@ -131,14 +131,124 @@ confirmation prompt is shown before overwriting.
 
 ```bash
 # Interactive — last prompt asks for filename (default: heredicalc.yml)
-heredicalc init
+heredicalc add config
 
 # Pre-fill the filename prompt via -o
-heredicalc init -o configs/brca1_latvia.yml
+heredicalc add config -o configs/brca1_latvia.yml
 
 # Print to stdout (enter empty string at the filename prompt)
-heredicalc init
+heredicalc add config
 # Output file [...]: <Enter>
+```
+
+!!! note "Deprecated alias"
+    `heredicalc init` still works but prints a deprecation warning.
+    Use `heredicalc add config` instead.
+
+---
+
+## `heredicalc add trait`
+
+Add a new user-defined genetic entity (RR table + CRHF value + metadata).
+
+```
+heredicalc add trait [OPTIONS] [NAME]
+```
+
+| Argument / Option | Type | Description |
+|-------------------|------|-------------|
+| `NAME` | str | Trait name, e.g. `BRCA2` (prompted if omitted) |
+| `--crhf` | float | CRHF value (prompted if omitted) |
+| `--kind` | str | Trait kind (default: `gene`; see kinds below) |
+| `--rr-file` | path | Import RR CSV directly; omit to generate a template |
+| `--meta` | str | Free metadata as `key=value` (repeatable) |
+
+**Trait kinds:** `gene`, `chromosomal_anomaly`, `epigenetic`, `polygenic_score`, `other`
+
+If `--rr-file` is omitted, a template CSV is written to the user data directory and
+the command exits with instructions. Fill in the RR values and re-run with `--rr-file`.
+
+User data is stored in:
+
+- **macOS:** `~/Library/Application Support/heredicalc/traits/`
+- **Linux:** `~/.local/share/heredicalc/traits/`
+
+```bash
+# Step 1: generate template (no --rr-file)
+heredicalc add trait BRCA2 --crhf 0.0013
+
+# Step 2: fill in template, then import
+heredicalc add trait BRCA2 --crhf 0.0013 --rr-file BRCA2_rr.csv \
+  --meta "locus=13q12.3" --meta "omim_nr=600185"
+```
+
+---
+
+## `heredicalc clone trait`
+
+Clone an existing trait (built-in or user-defined) as the basis for a new one.
+
+```
+heredicalc clone trait [OPTIONS] SOURCE TARGET
+```
+
+| Argument / Option | Type | Description |
+|-------------------|------|-------------|
+| `SOURCE` | str | Source trait name (built-in or user) |
+| `TARGET` | str | New trait name |
+| `--crhf` | float | Override CRHF value for the new trait |
+
+Built-in data is never modified — the clone always lands in the user data directory.
+
+```bash
+# Clone BRCA1 as basis for BRCA2, then edit
+heredicalc clone trait BRCA1 BRCA2 --crhf 0.0013
+heredicalc edit trait BRCA2 --rr-file BRCA2_rr.csv
+```
+
+---
+
+## `heredicalc edit trait`
+
+Edit a user-defined trait.
+
+```
+heredicalc edit trait [OPTIONS] NAME
+```
+
+| Argument / Option | Type | Description |
+|-------------------|------|-------------|
+| `NAME` | str | Trait name to edit |
+| `--rr-file` | path | Replace the RR table from this file |
+| `--meta` | str | Replace metadata key=value (repeatable) |
+
+If `NAME` is a built-in trait, an interactive prompt asks whether to clone it
+to the user directory first.
+
+```bash
+heredicalc edit trait BRCA2
+heredicalc edit trait BRCA2 --rr-file updated_brca2.csv
+```
+
+---
+
+## `heredicalc remove trait`
+
+Remove a user-defined trait.
+
+```
+heredicalc remove trait [OPTIONS] NAME
+```
+
+| Option | Type | Description |
+|--------|------|-------------|
+| `--yes`, `-y` | flag | Skip confirmation prompt |
+
+Built-in traits cannot be removed. Removes the manifest entry and the user RR CSV.
+
+```bash
+heredicalc remove trait BRCA2
+heredicalc remove trait BRCA2 --yes
 ```
 
 ---
