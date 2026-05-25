@@ -19,6 +19,7 @@ class PluginMeta(BaseModel):
     max_api_version: str | None = None
     requires: dict[str, str | None] = {}
     compatible_with: dict[str, list[str]] = {}
+    defaults: dict[str, str] = {}
 
 
 class PluginSpec(BaseModel):
