@@ -68,11 +68,11 @@ class TestCI5IX:
 
 
 class TestCI5VIII:
-    def test_list_sources_returns_99(self):
+    def test_list_sources_returns_229(self):
         from heredicalc.plugins.incidence_sources.ci5_viii.plugin import CI5VIIIIncidenceSource
 
         s = CI5VIIIIncidenceSource()
-        assert len(s.list_sources()) == 99
+        assert len(s.list_sources()) == 229
 
     def test_find_source_by_sequential_id(self):
         from heredicalc.plugins.incidence_sources.ci5_viii.plugin import CI5VIIIIncidenceSource
