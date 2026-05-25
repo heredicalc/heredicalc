@@ -1,0 +1,15 @@
+PedID	IndID	Mother	Father	Sex	Aff	Age	Geno	FPTP
+Belman	1	0	0	M	.	80	.	0
+Belman	2	0	0	F	BrCa	65	.	0
+Belman	3	2	1	F	.	81	Het	0
+Belman	4	2	1	M	unaff	41	.	0
+Belman	5	0	0	F	.	80	.	0
+Belman	6	2	1	F	unaff	75	Het	0
+Belman	7	0	0	M	unaff	80	.	0
+Belman	8	2	1	F	unaff	60	Neg	0
+Belman	9	5	4	F	BrCa	41	Neg	0
+Belman	10	5	4	F	BrCa	50	Het	0
+Belman	11	5	4	F	unaff	52	Het	0
+Belman	12	6	7	F	BrCa	49	Het	1
+Belman	13	6	7	M	unaff	36	Het	0
+Belman	14	6	7	F	BrCa	25	Het	0
