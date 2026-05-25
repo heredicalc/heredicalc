@@ -44,7 +44,7 @@ def _fixture_to_config(cfg: dict[str, Any]) -> PipelineConfig:
         plugins=PluginConfig(
             incidence_source=cfg["incidence_source"],
             phenotype_model=cfg["phenotype_model"],
-            trait_mapper="ci5_hbopc",
+            trait_mapper="ci5_ix_hbopc",
             penetrance_model=cfg["penetrance_model"],
             params=params,
         ),
