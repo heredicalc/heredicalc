@@ -32,8 +32,17 @@ class PipelineRunner:
         :return: FLB value (> 1 supports pathogenicity).
         """
         reg = self._registry
-        pc = config.plugins
         cc = config.computation
+
+        # Cascade: apply penetrance_model plugin-specific defaults for fields not
+        # explicitly set in config (detected via Pydantic model_fields_set).
+        pc = config.plugins
+        pen_defaults = reg.resolve("penetrance_model", pc.penetrance_model).plugin_class.meta.defaults
+        if pen_defaults:
+            overrides = {k: v for k, v in pen_defaults.items() if k not in config.plugins.model_fields_set}
+            if overrides:
+                pc = pc.model_copy(update=overrides)
+                config = PipelineConfig(computation=cc, plugins=pc)
 
         # Build params dict with genetic_entity for sub-plugin calls
         params = dict(pc.params)

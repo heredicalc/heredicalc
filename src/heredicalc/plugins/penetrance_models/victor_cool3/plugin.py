@@ -59,6 +59,7 @@ class VictorCool3PenetranceModel:
             "flb_calculator": ["segregatr"],
             "liability_assigner": ["victor_standard"],
         },
+        defaults={"hazard_model": "annual_rate_cool3"},
     )
 
     def __init__(self, rr_model: RRModel, crhf_model: CRHFModel) -> None:
