@@ -18,6 +18,7 @@ from __future__ import annotations
 from heredicalc.plugins.crhf_models.lookup.plugin import LookupCRHFModel
 from heredicalc.plugins.flb_calculators.segregatr.plugin import SegregatrFLBCalculator
 from heredicalc.plugins.hazard_models.annual_rate.plugin import AnnualRateHazardModel
+from heredicalc.plugins.hazard_models.annual_rate_cool3.plugin import AnnualRateCool3HazardModel
 from heredicalc.plugins.incidence_sources.ci5_viii.plugin import CI5VIIIIncidenceSource
 from heredicalc.plugins.incidence_sources.ci5_ix.plugin import CI5IXIncidenceSource
 from heredicalc.plugins.incidence_sources.ci5_x.plugin import CI5XIncidenceSource
@@ -28,9 +29,14 @@ from heredicalc.plugins.liability_assigners.victor_standard.plugin import (
 )
 from heredicalc.plugins.pedigree_formats.cool3_tsv.plugin import Cool3TsvPedigreeFormat
 from heredicalc.plugins.penetrance_models.victor.plugin import VictorPenetranceModel
+from heredicalc.plugins.penetrance_models.victor_cool3.plugin import VictorCool3PenetranceModel
 from heredicalc.plugins.phenotype_models.hbopc.plugin import HBOPCPhenotypeModel
 from heredicalc.plugins.rr_models.tabular.plugin import TabularRRModel
-from heredicalc.plugins.trait_mappers.ci5_hbopc.plugin import CI5HBOPCTraitMapper
+from heredicalc.plugins.trait_mappers.ci5_viii_hbopc.plugin import CI5VIIIHBOPCTraitMapper
+from heredicalc.plugins.trait_mappers.ci5_ix_hbopc.plugin import CI5IXHBOPCTraitMapper
+from heredicalc.plugins.trait_mappers.ci5_x_hbopc.plugin import CI5XHBOPCTraitMapper
+from heredicalc.plugins.trait_mappers.ci5_xi_hbopc.plugin import CI5XIHBOPCTraitMapper
+from heredicalc.plugins.trait_mappers.ci5_xii_hbopc.plugin import CI5XIIHBOPCTraitMapper
 
 _BUILTIN_PLUGINS = [
     Cool3TsvPedigreeFormat,
@@ -40,9 +46,15 @@ _BUILTIN_PLUGINS = [
     CI5XIncidenceSource,
     CI5XIIncidenceSource,
     CI5XIIIncidenceSource,
-    CI5HBOPCTraitMapper,
+    CI5VIIIHBOPCTraitMapper,
+    CI5IXHBOPCTraitMapper,
+    CI5XHBOPCTraitMapper,
+    CI5XIHBOPCTraitMapper,
+    CI5XIIHBOPCTraitMapper,
     AnnualRateHazardModel,
+    AnnualRateCool3HazardModel,
     VictorPenetranceModel,
+    VictorCool3PenetranceModel,
     LookupCRHFModel,
     TabularRRModel,
     VictorStandardLiabilityAssigner,
