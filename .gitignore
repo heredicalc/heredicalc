@@ -1,6 +1,3 @@
-# Bootstrap staging directory (not part of package)
-_bootstrap/
-
 # Python
 __pycache__/
 *.py[cod]
