@@ -15,7 +15,7 @@ from heredicalc.plugins.incidence_sources.ci5_ix.plugin import _AGE_GROUPS, _ext
 _DATA = _files(__package__) / "data"
 
 # CI5-VIII uses sequential integer registry IDs — map int → source_id string.
-_ID_RE = re.compile(r"^\s+(\d+)\s+\*?(.+)$")
+_ID_RE = re.compile(r"^\s*(\d+)\s+\*?(.+)$")
 _CANCER_RE = re.compile(r"^\s+(\d+)\s+\S+\s+(.+)$")
 
 
