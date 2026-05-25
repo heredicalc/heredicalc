@@ -96,6 +96,10 @@ plugins:
     population: "Latvia"
 ```
 
+When `penetrance_model: victor_cool3` is set without an explicit `hazard_model`,
+HerediCalc automatically selects `annual_rate_cool3` (plugin-specific default).
+Specifying `hazard_model` explicitly always takes precedence.
+
 ---
 
 ## CLI Overrides

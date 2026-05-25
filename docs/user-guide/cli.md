@@ -30,6 +30,7 @@ heredicalc run [OPTIONS] PEDIGREE
 | `--phenotype-model` | str | Phenotype model plugin, e.g. `hbopc` |
 | `--trait-mapper` | str | Trait mapper plugin, e.g. `ci5_ix_hbopc` |
 | `--penetrance-model` | str | Penetrance model plugin, e.g. `victor` |
+| `--hazard-model` | str | Hazard model plugin, e.g. `annual_rate` |
 | `--format` | `text`\|`json` | Output format (default: `text`) |
 | `--verbose`, `-v` | flag | Enable INFO-level logging |
 
@@ -54,6 +55,16 @@ heredicalc run pedigree.ped \
   --phenotype-model hbopc \
   --trait-mapper ci5_ix_hbopc \
   --penetrance-model victor
+
+# COOL3-compatible — hazard-model is automatically set to annual_rate_cool3
+heredicalc run pedigree.ped \
+  --genetic-entity BRCA1 \
+  --allele-freq 0.0001 \
+  --population "Latvia" \
+  --incidence-source ci5_ix \
+  --phenotype-model hbopc \
+  --trait-mapper ci5_ix_hbopc \
+  --penetrance-model victor_cool3
 
 # JSON output (suitable for piping)
 heredicalc run pedigree.ped --config heredicalc.yml --format json
