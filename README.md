@@ -15,7 +15,7 @@ strong evidence of pathogenicity).
 ## Quick Install
 
 ```bash
-pip install heredicalc
+pip install git+https://github.com/leckermatz79/heredicalc-v4.git
 ```
 
 For R dependency setup, see [docs/user-guide/cli.md](docs/user-guide/cli.md).
@@ -43,7 +43,7 @@ computation:
 plugins:
   incidence_source: ci5_ix
   phenotype_model: hbopc
-  trait_mapper: ci5_hbopc
+  trait_mapper: ci5_ix_hbopc
   penetrance_model: victor
   flb_calculator: segregatr
   params:
