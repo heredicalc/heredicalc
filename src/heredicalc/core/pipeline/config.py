@@ -21,7 +21,9 @@ class PluginConfig(BaseModel):
     phenotype_model: str
     trait_mapper: str
     hazard_model: str = "annual_rate"
-    penetrance_model: str
+    penetrance_model: str = "victor"
+    rr_model: str = "tabular"
+    crhf_model: str = "lookup"
     liability_assigner: str = "victor_standard"
     flb_calculator: str = "segregatr"
     pedigree_format: str = "cool3_tsv"
