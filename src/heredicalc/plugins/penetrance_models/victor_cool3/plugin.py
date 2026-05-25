@@ -1,6 +1,6 @@
 """VICTOR competing-risk penetrance model — COOL3-compatible variant.
 
-Replicates the methodology used by COOL3 v3, including two known deviations
+Replicates the methodology used by COOL3 v3, including three known deviations
 from mathematically correct competing-risk theory:
 
 1. **Tracked-only survival**: OtherTrait is excluded from lambda_all when
@@ -11,11 +11,17 @@ from mathematically correct competing-risk theory:
    for unaffected members is evaluated at the band midpoint ``(a0+a1)//2``
    rather than the band end ``a1``.
 
+3. **No band_width normalisation of hazard rates**: Implemented in the companion
+   plugin ``annual_rate_cool3`` (``hazard_model``). A faithful COOL3 reproduction
+   requires configuring **both** ``penetrance_model: victor_cool3`` **and**
+   ``hazard_model: annual_rate_cool3`` together. Using ``victor_cool3`` with the
+   correct ``annual_rate`` hazard model will not reproduce COOL3 output.
+
 These deviations make COOL3 internally inconsistent (affected rows cover the
 full band; unaffected rows cover only the first half), but are replicated here
 to produce COOL3-identical FLB values for validation and comparison purposes.
 
-See ``docs/algorithms/victor-model.md`` for a full mathematical analysis.
+See ``docs/algorithms/competing-risk-model.md`` for a full mathematical analysis.
 """
 
 from __future__ import annotations
@@ -85,39 +91,31 @@ class VictorCool3PenetranceModel:
             )
             phenotype_names = list(sub["phenotype"].unique())
 
-            lambda_nc = np.zeros((100, len(phenotype_names)))
-            lambda_het = np.zeros((100, len(phenotype_names)))
-            lambda_hom = np.zeros((100, len(phenotype_names)))
+            # COOL3 deviation 1: tracked-only survival — only tracked phenotypes
+            # contribute to lambda_all; OtherTrait is excluded entirely.
+            tracked_names = [p for p in phenotype_names if p != _OTHER]
+            n_tracked = len(tracked_names)
 
-            for j, pheno in enumerate(phenotype_names):
+            lambda_nc = np.zeros((100, n_tracked))
+            lambda_het = np.zeros((100, n_tracked))
+            lambda_hom = np.zeros((100, n_tracked))
+
+            for j, pheno in enumerate(tracked_names):
                 age_series = sub[sub["phenotype"] == pheno].set_index("age")["lambda_pop"]
                 for a in range(100):
                     val = age_series.get(a, 0.0)
                     lp = float(val) if not hasattr(val, "__len__") else float(val.iloc[0])
-
-                    if pheno == _OTHER:
-                        rr_het = 1.0
-                        rr_hom = 1.0
-                    else:
-                        rr_het = self.rr_model.get_rr(genetic_entity, sex, a, pheno, "het")
-                        rr_hom = self.rr_model.get_rr(genetic_entity, sex, a, pheno, "hom")
-
+                    rr_het = self.rr_model.get_rr(genetic_entity, sex, a, pheno, "het")
+                    rr_hom = self.rr_model.get_rr(genetic_entity, sex, a, pheno, "hom")
                     D = 1.0 + 2.0 * q * (rr_het - 1.0)
                     lnc = lp / D if D > 0 else lp
                     lambda_nc[a, j] = lnc
                     lambda_het[a, j] = rr_het * lnc
                     lambda_hom[a, j] = rr_hom * lnc
 
-            # COOL3 deviation 1: tracked-only survival (OtherTrait excluded)
-            tracked_cols = [j for j, p in enumerate(phenotype_names) if p != _OTHER]
-            if tracked_cols:
-                lambda_all_nc = lambda_nc[:, tracked_cols].sum(axis=1)
-                lambda_all_het = lambda_het[:, tracked_cols].sum(axis=1)
-                lambda_all_hom = lambda_hom[:, tracked_cols].sum(axis=1)
-            else:
-                lambda_all_nc = lambda_nc.sum(axis=1)
-                lambda_all_het = lambda_het.sum(axis=1)
-                lambda_all_hom = lambda_hom.sum(axis=1)
+            lambda_all_nc = lambda_nc.sum(axis=1)
+            lambda_all_het = lambda_het.sum(axis=1)
+            lambda_all_hom = lambda_hom.sum(axis=1)
 
             S_nc = np.exp(-np.cumsum(lambda_all_nc))
             S_het = np.exp(-np.cumsum(lambda_all_het))
@@ -127,12 +125,11 @@ class VictorCool3PenetranceModel:
             S_het_prev = np.concatenate([[1.0], S_het[:-1]])
             S_hom_prev = np.concatenate([[1.0], S_hom[:-1]])
 
-            n_pheno = len(phenotype_names)
-            F_nc = np.zeros((100, n_pheno))
-            F_het = np.zeros((100, n_pheno))
-            F_hom = np.zeros((100, n_pheno))
+            F_nc = np.zeros((100, n_tracked))
+            F_het = np.zeros((100, n_tracked))
+            F_hom = np.zeros((100, n_tracked))
 
-            for j in range(n_pheno):
+            for j in range(n_tracked):
                 inc_nc = S_nc_prev * (1.0 - np.exp(-lambda_nc[:, j]))
                 inc_het = S_het_prev * (1.0 - np.exp(-lambda_het[:, j]))
                 inc_hom = S_hom_prev * (1.0 - np.exp(-lambda_hom[:, j]))
@@ -140,7 +137,7 @@ class VictorCool3PenetranceModel:
                 F_het[:, j] = np.cumsum(inc_het)
                 F_hom[:, j] = np.cumsum(inc_hom)
 
-            pheno_idx = {p: i for i, p in enumerate(phenotype_names)}
+            pheno_idx = {p: i for i, p in enumerate(tracked_names)}
 
             for a0, a1 in bands:
                 f_prev_a0 = a0 - 1
