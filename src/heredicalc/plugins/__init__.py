@@ -31,16 +31,23 @@ from heredicalc.plugins.pedigree_formats.cool3_tsv.plugin import Cool3TsvPedigre
 from heredicalc.plugins.penetrance_models.victor.plugin import VictorPenetranceModel
 from heredicalc.plugins.penetrance_models.victor_cool3.plugin import VictorCool3PenetranceModel
 from heredicalc.plugins.phenotype_models.hbopc.plugin import HBOPCPhenotypeModel
+from heredicalc.plugins.phenotype_models.hbopc_prca.plugin import HBOPCPrCaPhenotypeModel
 from heredicalc.plugins.rr_models.tabular.plugin import TabularRRModel
 from heredicalc.plugins.trait_mappers.ci5_viii_hbopc.plugin import CI5VIIIHBOPCTraitMapper
 from heredicalc.plugins.trait_mappers.ci5_ix_hbopc.plugin import CI5IXHBOPCTraitMapper
 from heredicalc.plugins.trait_mappers.ci5_x_hbopc.plugin import CI5XHBOPCTraitMapper
 from heredicalc.plugins.trait_mappers.ci5_xi_hbopc.plugin import CI5XIHBOPCTraitMapper
 from heredicalc.plugins.trait_mappers.ci5_xii_hbopc.plugin import CI5XIIHBOPCTraitMapper
+from heredicalc.plugins.trait_mappers.ci5_viii_hbopc_prca.plugin import CI5VIIIHBOPCPrCaTraitMapper
+from heredicalc.plugins.trait_mappers.ci5_ix_hbopc_prca.plugin import CI5IXHBOPCPrCaTraitMapper
+from heredicalc.plugins.trait_mappers.ci5_x_hbopc_prca.plugin import CI5XHBOPCPrCaTraitMapper
+from heredicalc.plugins.trait_mappers.ci5_xi_hbopc_prca.plugin import CI5XIHBOPCPrCaTraitMapper
+from heredicalc.plugins.trait_mappers.ci5_xii_hbopc_prca.plugin import CI5XIIHBOPCPrCaTraitMapper
 
 _BUILTIN_PLUGINS = [
     Cool3TsvPedigreeFormat,
     HBOPCPhenotypeModel,
+    HBOPCPrCaPhenotypeModel,
     CI5VIIIIncidenceSource,
     CI5IXIncidenceSource,
     CI5XIncidenceSource,
@@ -51,6 +58,11 @@ _BUILTIN_PLUGINS = [
     CI5XHBOPCTraitMapper,
     CI5XIHBOPCTraitMapper,
     CI5XIIHBOPCTraitMapper,
+    CI5VIIIHBOPCPrCaTraitMapper,
+    CI5IXHBOPCPrCaTraitMapper,
+    CI5XHBOPCPrCaTraitMapper,
+    CI5XIHBOPCPrCaTraitMapper,
+    CI5XIIHBOPCPrCaTraitMapper,
     AnnualRateHazardModel,
     AnnualRateCool3HazardModel,
     VictorPenetranceModel,
