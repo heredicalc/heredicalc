@@ -40,6 +40,7 @@ class PedigreeMember(BaseModel):
     age_at_death: int | None = None
     genotype: Literal["Het", "Neg", "Hom"] | None = None
     is_proband: bool = False
+    affection_known: bool = True
 
     @model_validator(mode="after")
     def _compute_and_validate_ages(self) -> PedigreeMember:

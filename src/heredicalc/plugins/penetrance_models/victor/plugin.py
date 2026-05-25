@@ -179,7 +179,9 @@ class VictorPenetranceModel:
                         )
                     )
 
-                # Unaffected row: 1 - S_g(a1)
+                # Unaffected row: segregatr uses (1 - penetrance) for unaffected members,
+                # so store 1 - S_g(a1) = CIF(a1). segregatr then computes
+                # 1 - (1 - S_g(a1)) = S_g(a1) = P(cancer-free through band end | genotype).
                 rows.append(
                     PenetranceRow(
                         age_start=a0,
@@ -187,9 +189,9 @@ class VictorPenetranceModel:
                         sex=sex,  # type: ignore[arg-type]
                         phenotype="unaffected",
                         is_affected=False,
-                        penetrance_nc=float(1.0 - S_nc[a1]),
-                        penetrance_het=float(1.0 - S_het[a1]),
-                        penetrance_hom=float(1.0 - S_hom[a1]),
+                        penetrance_nc=1.0 - float(S_nc[a1]),
+                        penetrance_het=1.0 - float(S_het[a1]),
+                        penetrance_hom=1.0 - float(S_hom[a1]),
                     )
                 )
 

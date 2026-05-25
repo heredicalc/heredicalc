@@ -19,8 +19,10 @@ _OTHER = "OtherTrait"
 class AnnualRateHazardModel:
     """Convert raw incidence to per-year hazard rates.
 
-    Rate for each (sex, trait, age band): ``cases / person_years / band_width``.
-    Applied uniformly to each year in ``[age_start, age_end]``.
+    Rate for each (sex, trait, age band):
+    ``cases / person_years / band_width`` where band_width is the age
+    group width in years. This normalises the band-level incidence to a
+    per-year hazard that can be applied uniformly within the band.
     Traits not mapped to a tracked phenotype are aggregated as ``"OtherTrait"``.
     """
 
@@ -51,7 +53,7 @@ class AnnualRateHazardModel:
         inc = incidence.copy()
         inc["phenotype"] = inc["trait"].map(lambda t: trait_mapper.map_trait(t) or _OTHER)
 
-        # Compute annual rate per (sex, phenotype, age band)
+        # Compute per-year hazard rate per (sex, phenotype, age band)
         inc["band_width"] = inc["age_end"] - inc["age_start"] + 1
         inc["lambda_pop"] = np.where(
             inc["person_years"] > 0,
