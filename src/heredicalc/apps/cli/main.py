@@ -189,7 +189,7 @@ def init() -> None:
         "plugins": {
             "incidence_source": incidence_source,
             "phenotype_model": "hbopc",
-            "trait_mapper": "ci5_hbopc",
+            "trait_mapper": f"{incidence_source}_hbopc",
             "penetrance_model": "victor",
             "params": {
                 "population": population,
