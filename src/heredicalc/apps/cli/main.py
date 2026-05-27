@@ -9,7 +9,7 @@ import logging
 import os
 import sys
 import tempfile
-from concurrent.futures import ProcessPoolExecutor, as_completed
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from typing import Annotated, Any, Optional
 
@@ -337,9 +337,10 @@ def batch(
         except Exception as exc:  # noqa: BLE001
             return (path.name, None, str(exc))
 
-    with Progress(console=console) as progress:
+    stderr_console = Console(stderr=True)
+    with Progress(console=stderr_console) as progress:
         task = progress.add_task(f"Processing {len(ped_files)} pedigrees...", total=len(ped_files))
-        with ProcessPoolExecutor(max_workers=workers) as executor:
+        with ThreadPoolExecutor(max_workers=workers) as executor:
             futures = {executor.submit(_run_one, p): p for p in ped_files}
             for future in as_completed(futures):
                 name, flb, err = future.result()
