@@ -59,7 +59,7 @@ nav:
     - Penetrance Models: plugins/penetrance-models.md
     - Trait Mappers: plugins/trait-mappers.md
     - Plugin Dependencies: plugins/plugin-dependencies.md
-    - Copy-In System: plugins/copy-in-system.md
+    - External Plugins: plugins/external-plugins.md
     - Version Constraints: plugins/version-constraints.md
   - Management (Phase 4):
     - Pedigree Library: management/pedigree-library.md

@@ -113,13 +113,38 @@ class PluginRegistry:
                 logger.warning("Failed to load entry point plugin %s: %s", ep.name, exc)
 
     def discover_copyin(self, directory: Path | None = None) -> None:
-        """Scan the copy-in directory for plugin packages."""
+        """Scan plugin directories for external plugin.py files.
+
+        Directories searched (in order):
+        1. *directory* argument (default: ``~/.local/share/heredicalc/plugins/``)
+        2. Every path listed in the ``HEREDICALC_PLUGIN_PATH`` environment
+           variable (colon-separated on POSIX, semicolon-separated on Windows).
+
+        Each ``plugin.py`` file must expose either:
+        - ``plugin_class`` — a single plugin class, **or**
+        - ``plugin_classes`` — a list of plugin classes.
+        """
+        import os
+
+        dirs: list[Path] = []
         if directory is None:
-            directory = Path(platformdirs.user_data_dir("heredicalc")) / "plugins"
-        if not directory.exists():
-            return
-        for plugin_file in directory.rglob("plugin.py"):
-            self._load_copyin_plugin(plugin_file)
+            dirs.append(Path(platformdirs.user_data_dir("heredicalc")) / "plugins")
+        else:
+            dirs.append(directory)
+
+        env_val = os.environ.get("HEREDICALC_PLUGIN_PATH", "")
+        if env_val:
+            sep = ";" if os.name == "nt" else ":"
+            for raw in env_val.split(sep):
+                p = Path(raw.strip()).expanduser()
+                if p not in dirs:
+                    dirs.append(p)
+
+        for d in dirs:
+            if not d.exists():
+                continue
+            for plugin_file in d.rglob("plugin.py"):
+                self._load_copyin_plugin(plugin_file)
 
     def discover_all(self) -> None:
         """Run all discovery phases in order."""
@@ -160,7 +185,9 @@ class PluginRegistry:
     # ------------------------------------------------------------------
 
     def _load_copyin_plugin(self, path: Path) -> None:
-        module_name = f"_heredicalc_copyin_{path.parent.name}"
+        # Use a unique module name based on the full absolute path to avoid
+        # collisions when multiple external directories are searched.
+        module_name = f"_heredicalc_ext_{abs(hash(str(path.resolve())))}"
         try:
             spec = importlib.util.spec_from_file_location(module_name, path)
             if spec is None or spec.loader is None:
@@ -168,10 +195,18 @@ class PluginRegistry:
             module = importlib.util.module_from_spec(spec)
             sys.modules[module_name] = module
             spec.loader.exec_module(module)  # type: ignore[union-attr]
-            if hasattr(module, "plugin_class"):
-                self.register(module.plugin_class, source="copyin")
+
+            # Support both a single class and a list of classes.
+            classes: list[type] = []
+            if hasattr(module, "plugin_classes"):
+                classes.extend(module.plugin_classes)
+            elif hasattr(module, "plugin_class"):
+                classes.append(module.plugin_class)
+
+            for cls in classes:
+                self.register(cls, source=f"external:{path}")
         except Exception as exc:  # noqa: BLE001
-            logger.warning("Failed to load copy-in plugin %s: %s", path, exc)
+            logger.warning("Failed to load external plugin %s: %s", path, exc)
 
     def _run_circular_dep_check(self) -> None:
         for kind_store in self._store.values():
