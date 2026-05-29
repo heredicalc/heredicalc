@@ -132,6 +132,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.PUBLIC_REPO_TOKEN }}
         run: |
+          git config --unset http.https://github.com/.extraheader || true
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git remote add public https://x-access-token:${GH_TOKEN}@github.com/heredicalc/heredicalc.git
