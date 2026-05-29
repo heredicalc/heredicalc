@@ -1,15 +1,25 @@
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling", "hatch-vcs"]
 build-backend = "hatchling.build"
 
 [project]
 name = "heredicalc"
-version = "4.1.0"
+dynamic = ["version"]
 description = "Full Likelihood Bayes factor computation for hereditary cosegregation analysis"
 readme = "README.md"
 license = { text = "MIT" }
 authors = [{ name = "HerediCalc Contributors" }]
 requires-python = ">=3.12"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "Topic :: Scientific/Engineering :: Medical Science Apps.",
+]
+keywords = ["genetics", "cosegregation", "FLB", "pathogenicity", "Bayesian", "pedigree"]
 dependencies = [
     "pandas>=2.0",
     "numpy>=1.26",
@@ -47,8 +57,17 @@ dev = [
     "heredicalc[docs]",
 ]
 
+[project.urls]
+Homepage = "https://github.com/heredicalc/heredicalc"
+Documentation = "https://heredicalc.github.io/heredicalc"
+Repository = "https://github.com/heredicalc/heredicalc"
+Changelog = "https://github.com/heredicalc/heredicalc/blob/main/CHANGELOG.md"
+
 [project.scripts]
 heredicalc = "heredicalc.apps.cli.main:app"
+
+[tool.hatch.version]
+source = "vcs"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/heredicalc"]

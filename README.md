@@ -15,16 +15,16 @@ strong evidence of pathogenicity).
 ## Quick Install
 
 ```bash
-pip install git+https://github.com/leckermatz79/heredicalc-v4.git
+pip install heredicalc
 ```
 
-For R dependency setup, see [docs/user-guide/cli.md](docs/user-guide/cli.md).
+For R dependency setup, see the [documentation](https://heredicalc.github.io/heredicalc).
 
 ## Quick Start
 
 ```bash
 # Generate a config file interactively
-heredicalc init
+heredicalc add config
 
 # Run FLB computation
 heredicalc run Belman.ped --config heredicalc.yml
@@ -53,7 +53,7 @@ plugins:
 
 ## Documentation
 
-Full documentation: [https://heredicalc.readthedocs.io](https://heredicalc.readthedocs.io)
+Full documentation: [https://heredicalc.github.io/heredicalc](https://heredicalc.github.io/heredicalc)
 
 ## Contributing
 
