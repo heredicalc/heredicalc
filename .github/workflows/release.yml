@@ -69,6 +69,7 @@ jobs:
 
       - name: Push to public repo
         run: |
+          git config --unset http.https://github.com/.extraheader || true
           git remote add public https://x-access-token:${{ secrets.PUBLIC_REPO_TOKEN }}@github.com/heredicalc/heredicalc.git
           git push public HEAD:main --force
           git push public ${{ github.ref }}
