@@ -1,86 +1,84 @@
-# User Tutorial: Kosegregationsanalyse mit BRCA2
+# User Tutorial: Cosegregation Analysis with BRCA2
 
-Dieses Tutorial führt Sie Schritt für Schritt durch eine vollständige
-Kosegregationsanalyse mit einem Gen, das nicht als Built-in enthalten ist.
-Als durchgängiges Beispiel dient **BRCA2**.
+This tutorial walks you through a complete cosegregation analysis for a gene
+that is not included as a built-in. The running example is **BRCA2**.
 
 ---
 
-## Voraussetzungen
+## Prerequisites
 
-- HerediCalc ≥ 4.1.0 installiert — prüfen mit:
+- HerediCalc ≥ 4.1.0 installed — verify with:
   ```bash
   heredicalc --version
   ```
-- R ≥ 4.2 mit den Paketen `segregatr` und `kinship2`:
+- R ≥ 4.2 with the `segregatr` and `kinship2` packages:
   ```r
   install.packages("kinship2")
   install.packages("segregatr")
   ```
-- Eine Pedigree-Datei im COOL3-TSV-Format
+- A pedigree file in COOL3-TSV format
 
 ---
 
-## Schritt 1 — Orientierung: Was ist bereits eingebaut?
+## Step 1 — Orientation: What Is Already Built In?
 
-Verschaffen Sie sich zunächst einen Überblick über die verfügbaren Plugins:
+Start by checking which plugins are available:
 
 ```bash
 heredicalc plugins list --kind phenotype_model
 heredicalc plugins list --kind trait_mapper
 ```
 
-HerediCalc enthält für **BRCA1** eine vollständige Built-in-Konfiguration
-(RR-Tabelle + CRHF-Wert). Für **BRCA2** ist der CRHF-Wert (0,0013) eingebaut,
-die RR-Tabelle fehlt jedoch — sie muss vom Nutzer bereitgestellt werden.
+HerediCalc ships a complete built-in configuration for **BRCA1**
+(RR table + CRHF value). For **BRCA2**, the CRHF value (0.0013) is built in,
+but the RR table is missing — you must supply it.
 
 ---
 
-## Schritt 2 — RR-Tabelle vorbereiten
+## Step 2 — Prepare the RR Table
 
 ### Format
 
-Die RR-Tabelle ist eine CSV-Datei mit folgenden Spalten:
+The RR table is a CSV file with the following columns:
 
-| Spalte | Beschreibung |
+| Column | Description |
 |--------|-------------|
-| `gene` | Name der genetischen Entität, z. B. `BRCA2` |
-| `gender` | `F` (weiblich) oder `M` (männlich) |
-| `age_from` | Untere Altersgrenze des Bandes (inklusiv) |
-| `age_to` | Obere Altersgrenze (inklusiv); **leer** = offenes Ende |
-| `phenotype` | Kanonischer Phänotyp-Name (s. u.) |
-| `heterozygous_rr` | Relatives Risiko für Heterozygote |
-| `homozygous_rr` | Relatives Risiko für Homozygote (bei dominanten Genen = `heterozygous_rr`) |
+| `gene` | Name of the genetic entity, e.g. `BRCA2` |
+| `gender` | `F` (female) or `M` (male) |
+| `age_from` | Lower bound of the age band (inclusive) |
+| `age_to` | Upper bound (inclusive); **leave blank** for an open upper end |
+| `phenotype` | Canonical phenotype name (see below) |
+| `heterozygous_rr` | Relative risk for heterozygous carriers |
+| `homozygous_rr` | Relative risk for homozygous carriers (for dominant genes: same as `heterozygous_rr`) |
 
-**Kanonische Phänotypnamen** des `hbopc_prca`-Modells:
+**Canonical phenotype names** for the `hbopc_prca` model:
 `BreastCancer`, `OvarianCancer`, `PancreaticCancer`, `ProstateCancer`
 
-### Template generieren
+### Generate a Template
 
-Falls Sie noch keine RR-Datei haben, erzeugt HerediCalc ein vorausgefülltes
-Template mit allen Standardaltersbändern und RR = 1.0:
+If you do not yet have an RR file, HerediCalc can generate a pre-filled template
+with all default age bands and RR = 1.0:
 
 ```bash
 heredicalc add trait BRCA2
 ```
 
-Der Wizard fragt nach CRHF, Kind und optionalen Metadaten. Da kein `--rr-file`
-angegeben wurde, wird das Template geschrieben und der Pfad angezeigt:
+The wizard asks for CRHF, kind, and optional metadata. Because no `--rr-file`
+was provided, it writes the template and displays the path:
 
 ```
 No --rr-file provided. A template has been written to:
   ~/Library/Application Support/heredicalc/traits/rr/BRCA2_template.csv
 ```
 
-Öffnen Sie die Datei, tragen Sie Ihre RR-Werte ein und fahren Sie mit
-Schritt 3 fort.
+Open the file, fill in your RR values, then continue with Step 3.
 
-### Beispielwerte für BRCA2
+### Example Values for BRCA2
 
-!!! warning "Nur zur Illustration"
-    Die folgenden Werte sind vereinfachte Schätzungen nach Antoniou et al. (2003)
-    und dienen ausschließlich als Tutorial-Beispiel. Verwenden Sie für produktive
-    Analysen validierte RR-Schätzungen aus aktueller Fachliteratur.
+!!! warning "For illustration only"
+    The values below are simplified estimates based on Antoniou et al. (2003)
+    and are intended solely as a tutorial example. For production analyses,
+    use validated RR estimates from current literature.
 
 ```csv
 gene,gender,age_from,age_to,phenotype,heterozygous_rr,homozygous_rr
@@ -115,10 +113,9 @@ BRCA2,M,80,,ProstateCancer,1.0,1.0
 
 ---
 
-## Schritt 3 — Trait anlegen
+## Step 3 — Register the Trait
 
-Importieren Sie die ausgefüllte RR-Datei zusammen mit CRHF-Wert und optionalen
-Metadaten:
+Import the completed RR file together with the CRHF value and optional metadata:
 
 ```bash
 heredicalc add trait BRCA2 \
@@ -129,46 +126,46 @@ heredicalc add trait BRCA2 \
   --rr-file BRCA2_rr.csv
 ```
 
-Wenn der Import erfolgreich war:
+On success:
 
 ```
 ✓ RR table imported from BRCA2_rr.csv
 ✓ Trait 'BRCA2' added (CRHF=0.0013, kind=gene).
 ```
 
-Die Daten werden lokal gespeichert unter:
+Data is stored locally at:
 
 - **macOS:** `~/Library/Application Support/heredicalc/traits/`
 - **Linux:** `~/.local/share/heredicalc/traits/`
 
 ---
 
-## Schritt 4 — Phenotyp-Modell wählen
+## Step 4 — Choose a Phenotype Model
 
-HerediCalc kennt zwei eingebaute Phenotyp-Modelle:
+HerediCalc ships two built-in phenotype models:
 
-| Modell | Phenotypen | Geeignet für |
-|--------|-----------|--------------|
+| Model | Phenotypes | Suitable for |
+|-------|-----------|--------------|
 | `hbopc` | Breast, Ovarian, Pancreatic | BRCA1, PALB2, … |
 | `hbopc_prca` | Breast, Ovarian, Pancreatic, **Prostate** | **BRCA2**, HOXB13, … |
 
-Da BRCA2 mit Prostatakrebs assoziiert ist, verwenden wir `hbopc_prca` und den
-passenden Mapper `ci5_ix_hbopc_prca` (für CI5-Edition IX).
+Because BRCA2 is associated with prostate cancer, use `hbopc_prca` and the
+corresponding mapper `ci5_ix_hbopc_prca` (for CI5 edition IX).
 
 ---
 
-## Schritt 5 — Konfigurationsdatei erstellen
+## Step 5 — Create a Configuration File
 
-Statt alle Parameter bei jedem Aufruf einzeln anzugeben, speichern Sie sie in
-einer YAML-Datei:
+Rather than specifying all parameters on every invocation, store them in a
+YAML file:
 
 ```bash
 heredicalc add config
 ```
 
-Der interaktive Wizard fragt nach genetischer Entität, Allelfrequenz,
-Inzidenzquelle und Population. Geben Sie am Ende einen Dateinamen an
-(z. B. `brca2_latvia.yml`). Das Ergebnis:
+The interactive wizard asks for the genetic entity, allele frequency, incidence
+source, and population. Provide a filename at the end (e.g. `brca2_latvia.yml`).
+Result:
 
 ```yaml
 computation:
@@ -184,34 +181,34 @@ plugins:
     age_bands: [30, 40, 50, 60, 65, 70, 80]
 ```
 
-!!! note "Phenotyp-Modell manuell eintragen"
-    Der Wizard leitet den Mapper automatisch aus der Inzidenzquelle ab
-    (`ci5_ix` → `ci5_ix_hbopc`). Für `hbopc_prca` müssen Sie `phenotype_model`
-    und `trait_mapper` in der YAML-Datei manuell auf `hbopc_prca` bzw.
-    `ci5_ix_hbopc_prca` ändern.
+!!! note "Set the phenotype model manually"
+    The wizard derives the mapper name automatically from the incidence source
+    (`ci5_ix` → `ci5_ix_hbopc`). For `hbopc_prca`, edit `phenotype_model` and
+    `trait_mapper` in the YAML file manually to `hbopc_prca` and
+    `ci5_ix_hbopc_prca` respectively.
 
 ---
 
-## Schritt 6 — Analyse ausführen
+## Step 6 — Run the Analysis
 
 ```bash
 heredicalc run pedigree.ped --config brca2_latvia.yml
 ```
 
-Ausgabe:
+Output:
 
 ```
 FLB = 12.3450  (pedigree.ped)
 ```
 
-Für maschinell verarbeitbaren JSON-Output:
+For machine-readable JSON output:
 
 ```bash
 heredicalc run pedigree.ped --config brca2_latvia.yml --format json
 # {"pedigree": "pedigree.ped", "flb": 12.345}
 ```
 
-Mehrere Pedigrees auf einmal:
+Multiple pedigrees at once:
 
 ```bash
 heredicalc batch ./pedigrees/ --config brca2_latvia.yml
@@ -219,37 +216,37 @@ heredicalc batch ./pedigrees/ --config brca2_latvia.yml
 
 ---
 
-## Schritt 7 — Ergebnis interpretieren
+## Step 7 — Interpret the Result
 
-Der FLB-Wert quantifiziert die Kosegregations-Evidenz:
+The FLB value quantifies cosegregation evidence:
 
 | FLB | Interpretation |
 |-----|----------------|
-| < 1 | Gegen Kosegregation |
-| 1–8 | Schwache bis moderate Evidenz |
-| ≥ 8 | Starke Evidenz für Pathogenität |
-| ≥ 350 | Sehr starke Evidenz (ACMG/InSiGHT PP1_Strong) |
+| < 1 | Against cosegregation |
+| 1–8 | Weak to moderate evidence |
+| ≥ 8 | Strong evidence for pathogenicity |
+| ≥ 350 | Very strong evidence (ACMG/InSiGHT PP1_Strong) |
 
-Die genauen Schwellenwerte hängen vom verwendeten Klassifikationsrahmen ab
-(ACMG, InSiGHT, ClinGen). Konsultieren Sie die einschlägigen Leitlinien.
+Exact thresholds depend on the classification framework used
+(ACMG, InSiGHT, ClinGen). Consult the relevant guidelines.
 
-Für die mathematischen Grundlagen des FLB-Algorithmus siehe
+For the mathematical foundations of the FLB algorithm, see
 [FLB Computation](../algorithms/flb-computation.md).
 
 ---
 
-## Trait verwalten
+## Managing Traits
 
 ```bash
-# Überblick über alle eigenen Traits
+# Overview of all user-defined traits
 cat "$(python -c 'import platformdirs; print(platformdirs.user_data_dir("heredicalc"))')/traits/traits.yaml"
 
-# RR-Werte nachträglich ersetzen
+# Replace RR values retroactively
 heredicalc edit trait BRCA2 --rr-file updated_brca2.csv
 
-# BRCA2 als Basis für ein neues Gen klonen
+# Clone BRCA2 as a starting point for a new gene
 heredicalc clone trait BRCA2 PALB2 --crhf 0.0003
 
-# Trait wieder entfernen
+# Remove a trait
 heredicalc remove trait BRCA2
 ```
