@@ -1,0 +1,1799 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Full Likelihood Bayes factor computation for hereditary cosegregation analysis">
+      
+      
+      
+        <link rel="canonical" href="https://heredicalc.readthedocs.io/plugins/trait-mappers/">
+      
+      
+        <link rel="prev" href="../penetrance-models/">
+      
+      
+        <link rel="next" href="../plugin-dependencies/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Trait Mappers - HerediCalc</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="teal">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#trait-mappers" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="HerediCalc" class="md-header__button md-logo" aria-label="HerediCalc" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            HerediCalc
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Trait Mappers
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="teal"  aria-hidden="true"  type="radio" name="__palette" id="__palette_0">
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/heredicalc/heredicalc" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../user-guide/cli/" class="md-tabs__link">
+          
+  
+  
+  User Guide
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../tutorials/user-tutorial/" class="md-tabs__link">
+          
+  
+  
+  Tutorials
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../algorithms/competing-risk-model/" class="md-tabs__link">
+          
+  
+  
+  Algorithms
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../writing-plugins/" class="md-tabs__link">
+          
+  
+  
+  Plugins
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../management/pedigree-library/" class="md-tabs__link">
+          
+  
+  
+  Management (Phase 4)
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../api/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  API Reference
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="HerediCalc" class="md-nav__button md-logo" aria-label="HerediCalc" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    HerediCalc
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/heredicalc/heredicalc" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    User Guide
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    User Guide
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-guide/cli/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-guide/config-file/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-guide/gui/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Desktop GUI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-guide/web/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Web App
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tutorials
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/user-tutorial/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    User Tutorial
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/plugin-developer-tutorial/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugin Developer Tutorial
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Algorithms
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Algorithms
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../algorithms/competing-risk-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Competing-Risk Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../algorithms/victor-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VICTOR Model Tracks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../algorithms/flb-computation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FLB Computation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugins
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Plugins
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../writing-plugins/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Writing Plugins
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../plugin-kinds/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugin Kinds
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../penetrance-models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Penetrance Models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Trait Mappers
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Trait Mappers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#built-in-mappers-hbopc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Built-In Mappers (HBOPC)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Built-In Mappers (HBOPC)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#icd-code-mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ICD Code Mapping
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#affection-code-mapping-all-editions-identical" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Affection Code Mapping (all editions identical)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#built-in-mappers-hbopcprca" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Built-In Mappers (HBOPC+PrCa)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Built-In Mappers (HBOPC+PrCa)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#icd-code-mapping_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ICD Code Mapping
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#affection-code-mapping-all-editions-identical_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Affection Code Mapping (all editions identical)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#compatibility-enforcement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Compatibility Enforcement
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adding-a-new-mapper" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Adding a New Mapper
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../plugin-dependencies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugin Dependencies
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../external-plugins/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    External Plugins
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../version-constraints/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Version Constraints
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Management (Phase 4)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Management (Phase 4)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../management/pedigree-library/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pedigree Library
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../management/model-editor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Model Editor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="trait-mappers">Trait Mappers<a class="headerlink" href="#trait-mappers" title="Permanent link">&para;</a></h1>
+<p>A trait mapper translates between two different code systems:</p>
+<ol>
+<li><strong><code>map_trait(code)</code></strong> — raw CI5 cancer registry codes (e.g. <code>"113"</code>) → canonical
+   phenotype names (e.g. <code>"BreastCancer"</code>) or <code>None</code> for untracked traits</li>
+<li><strong><code>map_affection(status)</code></strong> — pedigree affection status strings (e.g. <code>"BrCa"</code>) →
+   canonical phenotype names or <code>None</code> for unaffected/unknown</li>
+</ol>
+<p>Each CI5 edition uses different numeric codes for the same cancer sites. HerediCalc
+therefore provides <strong>one standalone mapper per edition × phenotype model combination</strong>.
+There is no shared cross-edition mapper.</p>
+<hr />
+<h2 id="built-in-mappers-hbopc">Built-In Mappers (HBOPC)<a class="headerlink" href="#built-in-mappers-hbopc" title="Permanent link">&para;</a></h2>
+<p>The five <code>hbopc</code> mappers cover the HBOPC phenotype model
+(Hereditary Breast, Ovarian, and Pancreatic Cancer).</p>
+<h3 id="icd-code-mapping">ICD Code Mapping<a class="headerlink" href="#icd-code-mapping" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Plugin</th>
+<th>Incidence source</th>
+<th style="text-align: center;">Breast Cancer</th>
+<th style="text-align: center;">Ovarian Cancer</th>
+<th style="text-align: center;">Pancreatic Cancer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ci5_viii_hbopc</code></td>
+<td><code>ci5_viii</code></td>
+<td style="text-align: center;"><code>"116"</code></td>
+<td style="text-align: center;"><code>"136"</code></td>
+<td style="text-align: center;"><code>"071"</code></td>
+</tr>
+<tr>
+<td><code>ci5_ix_hbopc</code></td>
+<td><code>ci5_ix</code></td>
+<td style="text-align: center;"><code>"113"</code></td>
+<td style="text-align: center;"><code>"133"</code></td>
+<td style="text-align: center;"><code>"070"</code></td>
+</tr>
+<tr>
+<td><code>ci5_x_hbopc</code></td>
+<td><code>ci5_x</code></td>
+<td style="text-align: center;"><code>"113"</code></td>
+<td style="text-align: center;"><code>"133"</code></td>
+<td style="text-align: center;"><code>"070"</code></td>
+</tr>
+<tr>
+<td><code>ci5_xi_hbopc</code></td>
+<td><code>ci5_xi</code></td>
+<td style="text-align: center;"><code>"111"</code></td>
+<td style="text-align: center;"><code>"130"</code></td>
+<td style="text-align: center;"><code>"065"</code></td>
+</tr>
+<tr>
+<td><code>ci5_xii_hbopc</code></td>
+<td><code>ci5_xii</code></td>
+<td style="text-align: center;"><code>"159"</code></td>
+<td style="text-align: center;"><code>"178"</code></td>
+<td style="text-align: center;"><code>"080"</code></td>
+</tr>
+</tbody>
+</table>
+<p>All other CI5 codes map to <code>None</code> — they are treated as competing-risk events
+(<code>OtherTrait</code>) by the hazard and penetrance models.</p>
+<h3 id="affection-code-mapping-all-editions-identical">Affection Code Mapping (all editions identical)<a class="headerlink" href="#affection-code-mapping-all-editions-identical" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Pedigree code</th>
+<th>Canonical phenotype</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BrCa</code></td>
+<td><code>BreastCancer</code></td>
+</tr>
+<tr>
+<td><code>OvCa</code></td>
+<td><code>OvarianCancer</code></td>
+</tr>
+<tr>
+<td><code>PanCa</code></td>
+<td><code>PancreaticCancer</code></td>
+</tr>
+<tr>
+<td><code>unaff</code></td>
+<td><code>None</code> (unaffected)</td>
+</tr>
+<tr>
+<td><code>.</code></td>
+<td><code>None</code> (unknown / not assessed)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="built-in-mappers-hbopcprca">Built-In Mappers (HBOPC+PrCa)<a class="headerlink" href="#built-in-mappers-hbopcprca" title="Permanent link">&para;</a></h2>
+<p>The five <code>hbopc_prca</code> mappers extend HBOPC with ProstateCancer (C61).
+Use with genes that have a prostate cancer association (e.g. BRCA2, HOXB13).
+Requires <code>phenotype_model: hbopc_prca</code>.</p>
+<h3 id="icd-code-mapping_1">ICD Code Mapping<a class="headerlink" href="#icd-code-mapping_1" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Plugin</th>
+<th>Incidence source</th>
+<th style="text-align: center;">Breast</th>
+<th style="text-align: center;">Ovarian</th>
+<th style="text-align: center;">Pancreatic</th>
+<th style="text-align: center;">Prostate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ci5_viii_hbopc_prca</code></td>
+<td><code>ci5_viii</code></td>
+<td style="text-align: center;"><code>"116"</code></td>
+<td style="text-align: center;"><code>"136"</code></td>
+<td style="text-align: center;"><code>"071"</code></td>
+<td style="text-align: center;"><code>"154"</code></td>
+</tr>
+<tr>
+<td><code>ci5_ix_hbopc_prca</code></td>
+<td><code>ci5_ix</code></td>
+<td style="text-align: center;"><code>"113"</code></td>
+<td style="text-align: center;"><code>"133"</code></td>
+<td style="text-align: center;"><code>"070"</code></td>
+<td style="text-align: center;"><code>"151"</code></td>
+</tr>
+<tr>
+<td><code>ci5_x_hbopc_prca</code></td>
+<td><code>ci5_x</code></td>
+<td style="text-align: center;"><code>"113"</code></td>
+<td style="text-align: center;"><code>"133"</code></td>
+<td style="text-align: center;"><code>"070"</code></td>
+<td style="text-align: center;"><code>"151"</code></td>
+</tr>
+<tr>
+<td><code>ci5_xi_hbopc_prca</code></td>
+<td><code>ci5_xi</code></td>
+<td style="text-align: center;"><code>"111"</code></td>
+<td style="text-align: center;"><code>"130"</code></td>
+<td style="text-align: center;"><code>"065"</code></td>
+<td style="text-align: center;"><code>"147"</code></td>
+</tr>
+<tr>
+<td><code>ci5_xii_hbopc_prca</code></td>
+<td><code>ci5_xii</code></td>
+<td style="text-align: center;"><code>"159"</code></td>
+<td style="text-align: center;"><code>"178"</code></td>
+<td style="text-align: center;"><code>"080"</code></td>
+<td style="text-align: center;"><code>"197"</code></td>
+</tr>
+</tbody>
+</table>
+<p>Prostate codes verified against CI5 cancer dictionaries (CI5-VIII, XI, XII)
+and empirically confirmed for CI5-IX/X (male-dominant, peak incidence age 70–75).</p>
+<h3 id="affection-code-mapping-all-editions-identical_1">Affection Code Mapping (all editions identical)<a class="headerlink" href="#affection-code-mapping-all-editions-identical_1" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Pedigree code</th>
+<th>Canonical phenotype</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BrCa</code></td>
+<td><code>BreastCancer</code></td>
+</tr>
+<tr>
+<td><code>OvCa</code></td>
+<td><code>OvarianCancer</code></td>
+</tr>
+<tr>
+<td><code>PanCa</code></td>
+<td><code>PancreaticCancer</code></td>
+</tr>
+<tr>
+<td><code>PrCa</code></td>
+<td><code>ProstateCancer</code></td>
+</tr>
+<tr>
+<td><code>unaff</code></td>
+<td><code>None</code> (unaffected)</td>
+</tr>
+<tr>
+<td><code>.</code></td>
+<td><code>None</code> (unknown / not assessed)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Configuration example (BRCA2, CI5-IX, Latvia):</strong></p>
+<div class="highlight"><pre><span></span><code><span class="nt">plugins</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">phenotype_model</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">hbopc_prca</span>
+<span class="w">  </span><span class="nt">incidence_source</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ci5_ix</span>
+<span class="w">  </span><span class="nt">trait_mapper</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ci5_ix_hbopc_prca</span>
+</code></pre></div>
+<hr />
+<h2 id="compatibility-enforcement">Compatibility Enforcement<a class="headerlink" href="#compatibility-enforcement" title="Permanent link">&para;</a></h2>
+<p>Each mapper declares <code>compatible_with</code> in its metadata:</p>
+<div class="highlight"><pre><span></span><code><span class="n">compatible_with</span><span class="o">=</span><span class="p">{</span>
+    <span class="s2">&quot;incidence_source&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;ci5_ix&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;phenotype_model&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;hbopc&quot;</span><span class="p">],</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>The registry raises a <code>PluginCompatibilityError</code> at startup if the configured
+<code>trait_mapper</code> does not match the active <code>incidence_source</code>. For example,
+using <code>ci5_ix_hbopc</code> with <code>incidence_source: ci5_x</code> is caught immediately.</p>
+<p>The <code>heredicalc add config</code> command automatically derives the mapper name from
+the chosen incidence source: <code>{incidence_source}_hbopc</code> (use <code>hbopc_prca</code> variant manually
+when ProstateCancer tracking is needed).</p>
+<hr />
+<h2 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><span class="nt">plugins</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">incidence_source</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ci5_ix</span>
+<span class="w">  </span><span class="nt">trait_mapper</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ci5_ix_hbopc</span><span class="w">   </span><span class="c1"># must match incidence_source edition</span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th><code>incidence_source</code></th>
+<th><code>hbopc</code> mapper</th>
+<th><code>hbopc_prca</code> mapper</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ci5_viii</code></td>
+<td><code>ci5_viii_hbopc</code></td>
+<td><code>ci5_viii_hbopc_prca</code></td>
+</tr>
+<tr>
+<td><code>ci5_ix</code></td>
+<td><code>ci5_ix_hbopc</code></td>
+<td><code>ci5_ix_hbopc_prca</code></td>
+</tr>
+<tr>
+<td><code>ci5_x</code></td>
+<td><code>ci5_x_hbopc</code></td>
+<td><code>ci5_x_hbopc_prca</code></td>
+</tr>
+<tr>
+<td><code>ci5_xi</code></td>
+<td><code>ci5_xi_hbopc</code></td>
+<td><code>ci5_xi_hbopc_prca</code></td>
+</tr>
+<tr>
+<td><code>ci5_xii</code></td>
+<td><code>ci5_xii_hbopc</code></td>
+<td><code>ci5_xii_hbopc_prca</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="adding-a-new-mapper">Adding a New Mapper<a class="headerlink" href="#adding-a-new-mapper" title="Permanent link">&para;</a></h2>
+<p>When a new CI5 edition (e.g. CI5-XIII) becomes available, create a new standalone
+plugin directory — no existing code needs to be modified.</p>
+<p><strong>1. Create the directory structure:</strong></p>
+<div class="highlight"><pre><span></span><code>src/heredicalc/plugins/trait_mappers/ci5_xiii_hbopc/
+    __init__.py
+    plugin.py
+    data/
+        mappings.yml
+</code></pre></div>
+<p><strong>2. Write <code>plugin.py</code></strong> (copy from an existing mapper, update name and <code>compatible_with</code>):</p>
+<div class="highlight"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">CI5XIIIHBOPCTraitMapper</span><span class="p">:</span>
+    <span class="n">meta</span> <span class="o">=</span> <span class="n">PluginMeta</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;ci5_xiii_hbopc&quot;</span><span class="p">,</span>
+        <span class="n">version</span><span class="o">=</span><span class="s2">&quot;1.0.0&quot;</span><span class="p">,</span>
+        <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;trait_mapper&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Maps CI5-XIII trait codes to HBOPC canonical phenotypes&quot;</span><span class="p">,</span>
+        <span class="n">author</span><span class="o">=</span><span class="s2">&quot;HerediCalc&quot;</span><span class="p">,</span>
+        <span class="n">min_api_version</span><span class="o">=</span><span class="s2">&quot;1.0.0&quot;</span><span class="p">,</span>
+        <span class="n">compatible_with</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;incidence_source&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;ci5_xiii&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;phenotype_model&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;hbopc&quot;</span><span class="p">],</span>
+        <span class="p">},</span>
+    <span class="p">)</span>
+    <span class="c1"># ... (identical __init__, map_trait, map_affection implementation)</span>
+</code></pre></div>
+<p><strong>3. Write <code>data/mappings.yml</code></strong> with the correct CI5-XIII codes:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">trait_mappings</span><span class="p">:</span>
+<span class="w">  </span><span class="s">&quot;&lt;breast_code&gt;&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;BreastCancer&quot;</span>
+<span class="w">  </span><span class="s">&quot;&lt;ovarian_code&gt;&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;OvarianCancer&quot;</span>
+<span class="w">  </span><span class="s">&quot;&lt;pancreatic_code&gt;&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;PancreaticCancer&quot;</span>
+
+<span class="nt">affection_mappings</span><span class="p">:</span>
+<span class="w">  </span><span class="s">&quot;BrCa&quot;</span><span class="p p-Indicator">:</span><span class="w">  </span><span class="s">&quot;BreastCancer&quot;</span>
+<span class="w">  </span><span class="s">&quot;OvCa&quot;</span><span class="p p-Indicator">:</span><span class="w">  </span><span class="s">&quot;OvarianCancer&quot;</span>
+<span class="w">  </span><span class="s">&quot;PanCa&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;PancreaticCancer&quot;</span>
+<span class="w">  </span><span class="s">&quot;unaff&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
+<span class="w">  </span><span class="s">&quot;.&quot;</span><span class="p p-Indicator">:</span><span class="w">     </span><span class="l l-Scalar l-Scalar-Plain">null</span>
+</code></pre></div>
+<p><strong>4. Register in <code>src/heredicalc/plugins/__init__.py</code>:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">heredicalc.plugins.trait_mappers.ci5_xiii_hbopc.plugin</span><span class="w"> </span><span class="kn">import</span> <span class="n">CI5XIIIHBOPCTraitMapper</span>
+<span class="c1"># add CI5XIIIHBOPCTraitMapper to _BUILTIN_PLUGINS list</span>
+</code></pre></div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "toc.integrate", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>
