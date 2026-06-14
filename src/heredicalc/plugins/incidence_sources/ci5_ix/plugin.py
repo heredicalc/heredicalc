@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from importlib.resources import files as _files
 from pathlib import Path
 
@@ -81,8 +82,7 @@ class CI5IXIncidenceSource:
         sources = self._load_registry()
         result = []
         for source_id, name in sources.items():
-            period = _extract_period(name)
-            clean_name = name.split("(")[0].strip().rstrip(",").strip()
+            clean_name, period = _split_name_period(name)
             result.append(
                 SourceInfo(
                     source_id=source_id,
@@ -162,11 +162,28 @@ class CI5IXIncidenceSource:
         return TraitInfo(trait_code=zfill, name=self._trait_dict[zfill])
 
 
+# Trailing study period only, e.g. " (1998-2002)" or " (2008)" at the string end.
+# Anchored at $ so embedded parentheses (registry counts, race strata) are kept.
+_PERIOD_RE = re.compile(r"\s*\((\d{4}(?:-\d{4})?)\)\s*$")
+
+
+def _split_name_period(name: str) -> tuple[str, str]:
+    """Split a registry name into (display_name, study_period).
+
+    Only a trailing study period is removed; embedded parentheses such as
+    ``(9 Registries)`` and strata like ``: Black`` are preserved so names stay
+    unique (e.g. ``USA, SEER (9 Registries): Black``).
+    """
+    match = _PERIOD_RE.search(name)
+    if not match:
+        return name.strip().rstrip(",").strip(), ""
+    clean = name[: match.start()].strip().rstrip(",").strip()
+    return clean, match.group(1)
+
+
 def _extract_period(name: str) -> str:
-    """Extract the study period from a registry name like 'Latvia (1998-2002)'."""
-    if "(" in name and ")" in name:
-        return name[name.index("(") + 1 : name.index(")")]
-    return ""
+    """Return only the trailing study period (backward-compatible shim)."""
+    return _split_name_period(name)[1]
 
 
 def _load_ix_cancer_dict(data_dir: Path) -> dict[str, str]:
