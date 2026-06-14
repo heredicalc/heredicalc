@@ -52,10 +52,11 @@ def _registry():
 
 
 @st.cache_data(show_spinner=False)
-def _population_sources(incidence_source: str) -> list[tuple[str, str]]:
+def _population_sources(incidence_source: str) -> list[tuple[str, str, str]]:
     reg = _registry()
     plugin = reg.resolve("incidence_source", incidence_source).plugin_class()
-    return sorted((s.name, s.study_period) for s in plugin.list_sources())
+    sources = [(s.source_id, s.name, s.study_period) for s in plugin.list_sources()]
+    return sorted(sources, key=lambda t: (t[1], t[0]))
 
 
 def _compatible_names(reg, kind: str, selections: dict[str, str]) -> list[str]:
@@ -284,6 +285,14 @@ def main() -> None:
     _render_results(st.session_state.get("results"))
 
 
+def _default_population_id(sources: list[tuple[str, str, str]]) -> str:
+    # Resolve the reference population name (used by "Load demo") to its source_id.
+    for source_id, name, _ in sources:
+        if name == _REFERENCE["population"]:
+            return source_id
+    return sources[0][0]
+
+
 def _population_selectbox(incidence_source: str) -> str | None:
     try:
         sources = _population_sources(incidence_source)
@@ -293,15 +302,15 @@ def _population_selectbox(incidence_source: str) -> str | None:
     if not sources:
         st.error(f"Incidence source {incidence_source!r} exposes no populations.")
         return None
-    options = [name for name, _ in sources]
-    period_by_name = dict(sources)
-    if st.session_state.get("population") not in options:
-        st.session_state["population"] = "Latvia" if "Latvia" in options else options[0]
+    ids = [source_id for source_id, _, _ in sources]
+    label_by_id = {
+        source_id: f"{name} ({period})" if period else name for source_id, name, period in sources
+    }
+    # The selection VALUE is the unambiguous source_id; the label stays readable.
+    if st.session_state.get("population") not in ids:
+        st.session_state["population"] = _default_population_id(sources)
     return st.selectbox(
-        "Population",
-        options,
-        key="population",
-        format_func=lambda n: f"{n} ({period_by_name[n]})" if period_by_name.get(n) else n,
+        "Population", ids, key="population", format_func=lambda sid: label_by_id[sid]
     )
 
 

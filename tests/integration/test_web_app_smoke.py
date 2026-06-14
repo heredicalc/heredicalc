@@ -37,8 +37,25 @@ def test_dropdowns_are_registry_fed() -> None:
     assert "tabular" in options("rr_model")
     assert "lookup" in options("crhf_model")
     # Population is fed from the selected incidence source's list_sources()
-    # (labels carry the study period via format_func; the value stays the name).
+    # (labels carry name + study period via format_func).
     assert any(o.startswith("Latvia") for o in options("population"))
+
+
+def test_population_value_is_source_id() -> None:
+    from streamlit.testing.v1 import AppTest
+
+    from heredicalc.plugins.incidence_sources.ci5_ix.plugin import CI5IXIncidenceSource
+
+    at = AppTest.from_file(str(_APP), default_timeout=60)
+    at.run()
+    assert not at.exception
+
+    valid_ids = {s.source_id for s in CI5IXIncidenceSource().list_sources()}
+    # The selected value (and every underlying option) is an unambiguous source_id,
+    # not a display name — so the runner resolves it via find_source_id's exact branch.
+    assert at.selectbox(key="population").value in valid_ids
+    # The default for the reference incidence source resolves "Latvia" to its id.
+    assert at.selectbox(key="population").value == "54280099"
 
 
 @pytest.mark.skipif(shutil.which("Rscript") is None, reason="Rscript not available")
