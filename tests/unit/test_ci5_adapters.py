@@ -32,6 +32,44 @@ class TestCI5IX:
         with pytest.raises(ValueError, match="Ambiguous"):
             s.find_source_id("Switzerland")
 
+    def test_source_ids_unique(self):
+        from heredicalc.plugins.incidence_sources.ci5_ix.plugin import CI5IXIncidenceSource
+
+        sources = CI5IXIncidenceSource().list_sources()
+        ids = [s.source_id for s in sources]
+        assert len(ids) == len(set(ids))
+
+    def test_seer_sources_have_distinct_full_names(self):
+        from heredicalc.plugins.incidence_sources.ci5_ix.plugin import CI5IXIncidenceSource
+
+        sources = CI5IXIncidenceSource().list_sources()
+        seer = [s for s in sources if "SEER" in s.name]
+        names = [s.name for s in seer]
+
+        # Names are no longer truncated at the first parenthesis to "USA, SEER".
+        assert all(s.name != "USA, SEER" for s in seer)
+        assert len(names) == len(set(names))  # every SEER registry is distinct
+
+        # The distinguishing parts survive: 9 vs 14 registries, race strata.
+        assert any("(9 Registries)" in n for n in names)
+        assert any("(14 Registries)" in n for n in names)
+        assert any(n.endswith(": Black") for n in names)
+        assert any(n.endswith(": White") for n in names)
+
+        # The trailing study period is split off into study_period, not the name.
+        assert all("(" not in s.study_period and "-" in s.study_period for s in seer)
+        assert all("Registries" not in s.study_period for s in seer)
+
+    def test_split_name_period_keeps_embedded_parens(self):
+        from heredicalc.plugins.incidence_sources.ci5_ix.plugin import _split_name_period
+
+        assert _split_name_period("USA, SEER (9 Registries): Black (1998-2002)") == (
+            "USA, SEER (9 Registries): Black",
+            "1998-2002",
+        )
+        assert _split_name_period("Korea (1999-2002)") == ("Korea", "1999-2002")
+        assert _split_name_period("No period here") == ("No period here", "")
+
     def test_load_returns_valid_frame(self):
         from heredicalc.plugins.incidence_sources.ci5_ix.plugin import CI5IXIncidenceSource
 
