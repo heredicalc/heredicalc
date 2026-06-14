@@ -14,8 +14,8 @@ from heredicalc.core.models.plugin import PluginMeta, SourceInfo, TraitInfo
 from heredicalc.core.pipeline.types import INCIDENCE_SCHEMA, validate_frame
 from heredicalc.plugins.incidence_sources.ci5_ix.plugin import (
     _AGE_GROUPS,
-    _extract_period,
     _load_ix_cancer_dict,
+    _split_name_period,
 )
 
 _DATA = _files(__package__) / "data"
@@ -62,8 +62,7 @@ class CI5XIncidenceSource:
         sources = self._load_registry()
         result = []
         for source_id, name in sources.items():
-            period = _extract_period(name)
-            clean_name = name.split("(")[0].strip().rstrip(",").strip()
+            clean_name, period = _split_name_period(name)
             result.append(
                 SourceInfo(
                     source_id=source_id,

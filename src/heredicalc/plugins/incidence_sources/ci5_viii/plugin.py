@@ -10,7 +10,7 @@ import pandas as pd
 
 from heredicalc.core.models.plugin import PluginMeta, SourceInfo, TraitInfo
 from heredicalc.core.pipeline.types import INCIDENCE_SCHEMA, validate_frame
-from heredicalc.plugins.incidence_sources.ci5_ix.plugin import _AGE_GROUPS, _extract_period
+from heredicalc.plugins.incidence_sources.ci5_ix.plugin import _AGE_GROUPS, _split_name_period
 
 _DATA = _files(__package__) / "data"
 
@@ -58,8 +58,7 @@ class CI5VIIIIncidenceSource:
                         name_period = m.group(2).strip()
                         # Strip leading asterisk
                         name_period = name_period.lstrip("*").strip()
-                        period = _extract_period(name_period)
-                        clean = name_period.split("(")[0].strip().rstrip(",").strip()
+                        clean, period = _split_name_period(name_period)
                         self._registry[seq_id] = (clean, period)
         return self._registry
 
