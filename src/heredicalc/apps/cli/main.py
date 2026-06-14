@@ -22,10 +22,11 @@ from rich.table import Table
 
 from heredicalc.core.app_dirs import user_traits_dir
 from heredicalc.core.exceptions import HerediCalcError, SegregaError
-from heredicalc.core.pipeline.config import ComputationConfig, PipelineConfig, PluginConfig
+from heredicalc.core.pipeline.config import PipelineConfig
+from heredicalc.core.pipeline.config_builder import build_config_from_dict
 from heredicalc.core.pipeline.manifest import RunManifest
 from heredicalc.core.pipeline.runner import PipelineRunner
-from heredicalc.core.registry.registry import PluginRegistry
+from heredicalc.core.registry.registry import PluginRegistry, build_registry
 from heredicalc.core.trait_manifest import VALID_KINDS, get_entry, load_manifest, remove_entry, upsert_entry
 
 app = typer.Typer(
@@ -56,9 +57,7 @@ console = Console()
 # ---------------------------------------------------------------------------
 
 def _build_registry() -> PluginRegistry:
-    reg = PluginRegistry()
-    reg.discover_all()
-    return reg
+    return build_registry()
 
 
 def _write_manifest(run_manifest: RunManifest, pedigree: Path, manifest_dir: Path | None) -> Path:
@@ -97,10 +96,7 @@ def _load_config(config_path: Path | None, overrides: dict[str, Any]) -> Pipelin
             else:
                 plugins.setdefault("params", {})[key] = val
 
-    return PipelineConfig(
-        computation=ComputationConfig(**computation),
-        plugins=PluginConfig(**plugins),
-    )
+    return build_config_from_dict({"computation": computation, "plugins": plugins})
 
 
 def _bundled_crhf(name: str) -> float | None:
