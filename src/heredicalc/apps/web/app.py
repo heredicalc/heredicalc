@@ -25,20 +25,23 @@ _REFERENCE: dict[str, Any] = {
     "population": "Latvia",
     "age_bands": "30,40,50,60,65,70,80",
     "incidence_source": "ci5_ix",
+    "phenotype_model": "hbopc",
     "trait_mapper": "ci5_ix_hbopc",
-}
-
-# Fixed reference plugin selections (not exposed as widgets in this MVP).
-_PHENOTYPE_MODEL = "hbopc"
-_FIXED_PLUGINS = {
-    "hazard_model": "annual_rate",
-    "penetrance_model": "victor",
-    "liability_assigner": "victor_standard",
-    "flb_calculator": "segregatr",
-    "pedigree_format": "cool3_tsv",
     "rr_model": "tabular",
     "crhf_model": "lookup",
 }
+
+# Fixed model backbone (display-only; not exposed as selectable widgets).
+_PENETRANCE_MODEL = "victor"
+_FIXED_PLUGINS = {
+    "hazard_model": "annual_rate",
+    "penetrance_model": _PENETRANCE_MODEL,
+    "liability_assigner": "victor_standard",
+    "flb_calculator": "segregatr",
+    "pedigree_format": "cool3_tsv",
+}
+
+_LABELS = {"trait_mapper": "Trait mapper", "rr_model": "RR model", "crhf_model": "CRHF model"}
 
 _DEMO_PED = _files("heredicalc.apps.web") / "data" / "Belman.ped"
 
@@ -48,16 +51,42 @@ def _registry():
     return build_registry()
 
 
-def _compatible_trait_mappers(reg, incidence_source: str, phenotype_model: str) -> list[str]:
+@st.cache_data(show_spinner=False)
+def _population_sources(incidence_source: str) -> list[tuple[str, str]]:
+    reg = _registry()
+    plugin = reg.resolve("incidence_source", incidence_source).plugin_class()
+    return sorted((s.name, s.study_period) for s in plugin.list_sources())
+
+
+def _compatible_names(reg, kind: str, selections: dict[str, str]) -> list[str]:
+    """Names of registered *kind* plugins compatible with the current selections.
+
+    A candidate is rejected only if it explicitly declares a ``compatible_with``
+    entry for a selected kind that excludes the selected plugin. Plugins that
+    declare nothing for a kind are treated as universally compatible.
+    """
     names: list[str] = []
-    for entry in reg.list_plugins("trait_mapper"):
+    for entry in reg.list_plugins(kind):
         compatible = entry.meta.compatible_with
-        inc_ok = incidence_source in compatible.get("incidence_source", [])
-        phen_allowed = compatible.get("phenotype_model")
-        phen_ok = phen_allowed is None or phenotype_model in phen_allowed
-        if inc_ok and phen_ok:
+        ok = True
+        for sel_kind, sel_name in selections.items():
+            allowed = compatible.get(sel_kind)
+            if allowed is not None and sel_name not in allowed:
+                ok = False
+                break
+        if ok:
             names.append(entry.meta.name)
     return sorted(set(names))
+
+
+def _dependent_selectbox(reg, kind: str, label: str, selections: dict[str, str], default: str):
+    options = _compatible_names(reg, kind, selections)
+    if not options:
+        st.error(f"No {kind} is compatible with the current selection.")
+        return None
+    if st.session_state.get(kind) not in options:
+        st.session_state[kind] = default if default in options else options[0]
+    return st.selectbox(label, options, key=kind)
 
 
 def _build_raw_config(
@@ -66,20 +95,25 @@ def _build_raw_config(
     population: str,
     age_bands: list[int],
     incidence_source: str,
+    phenotype_model: str,
     trait_mapper: str,
+    rr_model: str,
+    crhf_model: str,
 ) -> dict[str, Any]:
     return {
         "computation": {"genetic_entity": genetic_entity, "allele_freq": allele_freq},
         "plugins": {
             "incidence_source": incidence_source,
-            "phenotype_model": _PHENOTYPE_MODEL,
+            "phenotype_model": phenotype_model,
             "trait_mapper": trait_mapper,
+            "rr_model": rr_model,
+            "crhf_model": crhf_model,
             **_FIXED_PLUGINS,
             "params": {
                 "population": population,
                 "age_bands": age_bands,
-                "rr_model": _FIXED_PLUGINS["rr_model"],
-                "crhf_model": _FIXED_PLUGINS["crhf_model"],
+                "rr_model": rr_model,
+                "crhf_model": crhf_model,
             },
         },
     }
@@ -176,27 +210,26 @@ def main() -> None:
             format="%.5f",
             key="allele_freq",
         )
-        population = st.text_input("Population", key="population")
-    with col2:
         age_bands_str = st.text_input("Age bands (comma-separated)", key="age_bands")
+    with col2:
         inc_options = sorted(e.meta.name for e in reg.list_plugins("incidence_source"))
         incidence_source = st.selectbox("Incidence source", inc_options, key="incidence_source")
-        tm_options = _compatible_trait_mappers(reg, incidence_source, _PHENOTYPE_MODEL)
-        if not tm_options:
-            st.error(
-                f"No trait_mapper is compatible with incidence source {incidence_source!r}. "
-                "Pick a different source."
+
+        phen_options = sorted(e.meta.name for e in reg.list_plugins("phenotype_model"))
+        if st.session_state.get("phenotype_model") not in phen_options:
+            st.session_state["phenotype_model"] = (
+                "hbopc" if "hbopc" in phen_options else phen_options[0]
             )
-            trait_mapper = None
-        else:
-            if st.session_state.get("trait_mapper") not in tm_options:
-                st.session_state["trait_mapper"] = (
-                    "ci5_ix_hbopc" if "ci5_ix_hbopc" in tm_options else tm_options[0]
-                )
-            trait_mapper = st.selectbox("Trait mapper", tm_options, key="trait_mapper")
+        phenotype_model = st.selectbox("Phenotype model", phen_options, key="phenotype_model")
+
+        population = _population_selectbox(incidence_source)
+
+    trait_mapper, rr_model, crhf_model = _data_plugin_selectboxes(
+        reg, incidence_source, phenotype_model
+    )
 
     with st.expander("Fixed model & plugins"):
-        st.write({"phenotype_model": _PHENOTYPE_MODEL, **_FIXED_PLUGINS})
+        st.write(_FIXED_PLUGINS)
 
     st.subheader("Pedigrees")
     uploads = st.file_uploader(
@@ -209,7 +242,15 @@ def main() -> None:
     run_clicked = c2.button("Run FLB", key="run", type="primary")
 
     if run_clicked:
-        if trait_mapper is None:
+        selections = {
+            "population": population,
+            "trait_mapper": trait_mapper,
+            "rr_model": rr_model,
+            "crhf_model": crhf_model,
+        }
+        missing = [k for k, v in selections.items() if v is None]
+        if missing:
+            st.error("Cannot run — no compatible selection for: " + ", ".join(missing) + ".")
             st.stop()
         try:
             age_bands = [int(x.strip()) for x in age_bands_str.split(",") if x.strip()]
@@ -228,7 +269,10 @@ def main() -> None:
                         population,
                         age_bands,
                         incidence_source,
+                        phenotype_model,
                         trait_mapper,
+                        rr_model,
+                        crhf_model,
                     )
                 )
             except Exception as exc:  # noqa: BLE001
@@ -238,6 +282,60 @@ def main() -> None:
                 st.session_state["results"] = _run_all(reg, config, pedigrees)
 
     _render_results(st.session_state.get("results"))
+
+
+def _population_selectbox(incidence_source: str) -> str | None:
+    try:
+        sources = _population_sources(incidence_source)
+    except Exception as exc:  # noqa: BLE001
+        st.error(f"Could not load populations for {incidence_source!r}: {_short_error(exc)}")
+        return None
+    if not sources:
+        st.error(f"Incidence source {incidence_source!r} exposes no populations.")
+        return None
+    options = [name for name, _ in sources]
+    period_by_name = dict(sources)
+    if st.session_state.get("population") not in options:
+        st.session_state["population"] = "Latvia" if "Latvia" in options else options[0]
+    return st.selectbox(
+        "Population",
+        options,
+        key="population",
+        format_func=lambda n: f"{n} ({period_by_name[n]})" if period_by_name.get(n) else n,
+    )
+
+
+def _data_plugin_selectboxes(reg, incidence_source: str, phenotype_model: str):
+    st.caption("Data plugins (restricted to selections compatible with the parameters above)")
+    pen_entry = reg.resolve("penetrance_model", _PENETRANCE_MODEL)
+    dep_kinds = list(pen_entry.meta.requires.keys())
+
+    cols = st.columns(1 + len(dep_kinds))
+    with cols[0]:
+        trait_mapper = _dependent_selectbox(
+            reg,
+            "trait_mapper",
+            _LABELS["trait_mapper"],
+            {"incidence_source": incidence_source, "phenotype_model": phenotype_model},
+            _REFERENCE["trait_mapper"],
+        )
+
+    sub_selections = {
+        "incidence_source": incidence_source,
+        "phenotype_model": phenotype_model,
+        "penetrance_model": _PENETRANCE_MODEL,
+    }
+    dep_values: dict[str, str | None] = {}
+    for i, dep_kind in enumerate(dep_kinds, start=1):
+        with cols[i]:
+            dep_values[dep_kind] = _dependent_selectbox(
+                reg,
+                dep_kind,
+                _LABELS.get(dep_kind, dep_kind.replace("_", " ").title()),
+                sub_selections,
+                _REFERENCE.get(dep_kind, ""),
+            )
+    return trait_mapper, dep_values.get("rr_model"), dep_values.get("crhf_model")
 
 
 def _render_results(results: list[dict[str, Any]] | None) -> None:

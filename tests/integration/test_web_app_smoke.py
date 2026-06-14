@@ -20,6 +20,27 @@ def test_app_renders_without_exception() -> None:
     assert not at.exception
 
 
+def test_dropdowns_are_registry_fed() -> None:
+    from streamlit.testing.v1 import AppTest
+
+    at = AppTest.from_file(str(_APP), default_timeout=60)
+    at.run()
+    assert not at.exception
+
+    def options(key: str) -> list[str]:
+        return list(at.selectbox(key=key).options)
+
+    # Every dropdown is populated from the discovered registry, not a hardcoded list.
+    assert {"ci5_ix", "ci5_viii"} <= set(options("incidence_source"))
+    assert "hbopc" in options("phenotype_model")
+    assert "ci5_ix_hbopc" in options("trait_mapper")
+    assert "tabular" in options("rr_model")
+    assert "lookup" in options("crhf_model")
+    # Population is fed from the selected incidence source's list_sources()
+    # (labels carry the study period via format_func; the value stays the name).
+    assert any(o.startswith("Latvia") for o in options("population"))
+
+
 @pytest.mark.skipif(shutil.which("Rscript") is None, reason="Rscript not available")
 def test_demo_run_yields_reference_flb() -> None:
     from streamlit.testing.v1 import AppTest
