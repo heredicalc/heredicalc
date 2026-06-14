@@ -44,6 +44,7 @@ nav:
   - User Guide:
     - CLI: user-guide/cli.md
     - Configuration: user-guide/config-file.md
+    - Reproducibility: user-guide/reproducibility.md
     - Desktop GUI: user-guide/gui.md
     - Web App: user-guide/web.md
   - Tutorials:
