@@ -29,7 +29,7 @@ The form is pre-filled with the primary Belman reference case
 | Age bands | `30,40,50,60,65,70,80` | Comma-separated integers |
 | Incidence source | `ci5_ix` | Dropdown of **registered** incidence sources |
 | Phenotype model | `hbopc` | Dropdown of **registered** phenotype models |
-| Population | `Latvia` | Dropdown from the chosen source's `list_sources()` |
+| Population | `Latvia` | Dropdown from the source's `list_sources()`; value is the `source_id` |
 | Trait mapper | `ci5_ix_hbopc` | Dropdown of mappers **compatible** with the source + phenotype model |
 | RR model | `tabular` | Dropdown of registered RR models compatible with the selection |
 | CRHF model | `lookup` | Dropdown of registered CRHF models compatible with the selection |
@@ -45,10 +45,16 @@ fixed to the reference defaults and shown in the *Fixed model & plugins* panel.
 ### Population dropdown
 
 The population is a dropdown filled from the selected incidence source's
-`list_sources()` (each label shows the source name and study period). The chosen
-name is passed as `params["population"]`; the runner resolves it via
-`find_source_id`. Changing the incidence source refreshes the list; a source that
-exposes no populations shows a clear error.
+`list_sources()`. Each entry shows the **full registry name** plus study period —
+so registries that share a prefix stay distinct (e.g. `USA, SEER (9 Registries)`,
+`USA, SEER (9 Registries): Black`, and the various `Korea, …` registries are all
+separately selectable).
+
+The selection **value** is the registry's unambiguous `source_id`, and that
+`source_id` is passed as `params["population"]`. The runner resolves it through
+`find_source_id`'s exact-ID branch, so there is no substring ambiguity (a name
+like `Korea` no longer matches many registries). Changing the incidence source
+refreshes the list; a source that exposes no populations shows a clear error.
 
 ### Dependent plugin coupling
 
