@@ -55,8 +55,12 @@ pytest tests/ --tb=short
 mkdocs build --strict
 ```
 
-Done criterion for Phase 1: 226 integration tests green; primary case
-`brca1_belman_latvia_ci5ix` within ±6% of reference FLB 19.47.
+Done criterion for Phase 1: integration tests green — every validation case meets
+its own `reference_flb` within its own `tolerance_pct`, as declared per case in
+`tests/fixtures/validation_fixtures.json` (correct `victor` model) and
+`tests/fixtures/validation_fixtures_cool3.json` (COOL3-compatible `victor_cool3`
+model). The primary case `brca1_belman_latvia_ci5ix` is defined in
+`validation_fixtures.json`. Read both values from the fixture; do not hardcode them.
 
 ## Git Workflow
 
