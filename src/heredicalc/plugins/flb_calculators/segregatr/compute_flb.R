@@ -8,7 +8,9 @@
 #                           penetrance_het, penetrance_hom)
 #   3: allele frequency (numeric)
 #
-# Output: JSON to stdout: {"flb": <value>}
+# Output: exactly one JSON object to stdout:
+#   {"flb": <value>, "r_session": {"r_version", "platform", "loaded_namespaces"}}
+# Diagnostics (if any) go to stderr only.
 
 suppressPackageStartupMessages({
   library(pedtools)
@@ -88,5 +90,31 @@ flb_val <- segregatr::FLB(
   liability   = liability_vec
 )
 
-# ----- Output JSON -----
-cat(sprintf('{"flb": %.15g}\n', flb_val))
+# ----- Collect R session provenance (after the FLB call) -----
+json_escape <- function(s) {
+  s <- gsub("\\", "\\\\", s, fixed = TRUE)
+  s <- gsub('"', '\\"', s, fixed = TRUE)
+  s
+}
+json_str <- function(s) sprintf('"%s"', json_escape(s))
+
+ns_names <- sort(loadedNamespaces())
+ns_entries <- vapply(
+  ns_names,
+  function(n) {
+    ver <- tryCatch(as.character(packageVersion(n)), error = function(e) "unknown")
+    sprintf("%s: %s", json_str(n), json_str(ver))
+  },
+  character(1)
+)
+ns_json <- sprintf("{%s}", paste(ns_entries, collapse = ", "))
+
+r_session_json <- sprintf(
+  '{"r_version": %s, "platform": %s, "loaded_namespaces": %s}',
+  json_str(R.version.string),
+  json_str(R.version$platform),
+  ns_json
+)
+
+# ----- Output JSON (single object on stdout) -----
+cat(sprintf('{"flb": %.15g, "r_session": %s}\n', flb_val, r_session_json))
