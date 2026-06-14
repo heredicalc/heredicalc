@@ -213,3 +213,10 @@ class PluginRegistry:
             for name_versions in kind_store.values():
                 for entry in name_versions.values():
                     check_circular(entry.plugin_class, self._store)
+
+
+def build_registry() -> PluginRegistry:
+    """Construct a registry and run all discovery phases. Shared by all deployment modes."""
+    reg = PluginRegistry()
+    reg.discover_all()
+    return reg
