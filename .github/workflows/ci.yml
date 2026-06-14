@@ -28,7 +28,7 @@ jobs:
             segregatr
 
       - name: Install Python dependencies
-        run: pip install -e ".[dev]"
+        run: pip install -e ".[web,dev]"
 
       - name: Run tests
         run: pytest tests/ --tb=short
