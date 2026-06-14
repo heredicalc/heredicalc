@@ -272,3 +272,7 @@ class FLBCalculator(Protocol):
         :raises SegregaError: If the external FLB computation fails.
         """
         ...
+
+    def session_info(self) -> dict[str, Any] | None:
+        """Optional: external session/runtime provenance from the last ``compute``."""
+        return None
