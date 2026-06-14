@@ -37,6 +37,13 @@ class SegregatrFLBCalculator:
         },
     )
 
+    def __init__(self) -> None:
+        self._session_info: dict[str, Any] | None = None
+
+    def session_info(self) -> dict[str, Any] | None:
+        """R session provenance parsed from the most recent ``compute`` call."""
+        return self._session_info
+
     def compute(
         self,
         pedigree: Pedigree,
@@ -85,6 +92,7 @@ class SegregatrFLBCalculator:
             stdout = result.stdout.strip()
             parsed = json.loads(stdout)
             flb = float(parsed["flb"])
+            self._session_info = parsed.get("r_session")
 
             # Clean up temp files on success
             ped_path.unlink(missing_ok=True)

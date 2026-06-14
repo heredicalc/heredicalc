@@ -23,6 +23,7 @@ from rich.table import Table
 from heredicalc.core.app_dirs import user_traits_dir
 from heredicalc.core.exceptions import HerediCalcError, SegregaError
 from heredicalc.core.pipeline.config import ComputationConfig, PipelineConfig, PluginConfig
+from heredicalc.core.pipeline.manifest import RunManifest
 from heredicalc.core.pipeline.runner import PipelineRunner
 from heredicalc.core.registry.registry import PluginRegistry
 from heredicalc.core.trait_manifest import VALID_KINDS, get_entry, load_manifest, remove_entry, upsert_entry
@@ -58,6 +59,15 @@ def _build_registry() -> PluginRegistry:
     reg = PluginRegistry()
     reg.discover_all()
     return reg
+
+
+def _write_manifest(run_manifest: RunManifest, pedigree: Path, manifest_dir: Path | None) -> Path:
+    """Write a ``<pedigree-stem>.manifest.json`` sidecar and return its path."""
+    dest_dir = manifest_dir if manifest_dir is not None else pedigree.parent
+    dest_dir.mkdir(parents=True, exist_ok=True)
+    dest = dest_dir / f"{pedigree.stem}.manifest.json"
+    dest.write_text(run_manifest.model_dump_json(indent=2) + "\n", encoding="utf-8")
+    return dest
 
 
 def _load_config(config_path: Path | None, overrides: dict[str, Any]) -> PipelineConfig:
@@ -269,6 +279,16 @@ def run(
     penetrance_model: Annotated[Optional[str], typer.Option(help="Penetrance model plugin.")] = None,
     hazard_model: Annotated[Optional[str], typer.Option(help="Hazard model plugin.")] = None,
     output_format: Annotated[str, typer.Option("--format", help="Output format: json, text.")] = "text",
+    manifest: Annotated[
+        bool,
+        typer.Option("--manifest/--no-manifest", help="Write a run-provenance manifest sidecar."),
+    ] = True,
+    manifest_dir: Annotated[
+        Optional[Path],
+        typer.Option(
+            "--manifest-dir", help="Directory for manifest sidecars (default: next to pedigree)."
+        ),
+    ] = None,
     verbose: Annotated[bool, typer.Option("--verbose", "-v")] = False,
 ) -> None:
     """Compute the FLB factor for a single pedigree."""
@@ -298,7 +318,15 @@ def run(
             transient=True,
         ) as progress:
             progress.add_task(f"Computing FLB for {pedigree.name}...", total=None)
-            flb = runner.run(pedigree, pipeline_config)
+            if manifest:
+                run_manifest = runner.run_with_manifest(pedigree, pipeline_config)
+                flb = run_manifest.flb
+            else:
+                flb = runner.run(pedigree, pipeline_config)
+
+        if manifest:
+            manifest_path = _write_manifest(run_manifest, pedigree, manifest_dir)
+            Console(stderr=True).print(f"[dim]Manifest written to {manifest_path}[/dim]")
 
         if output_format == "json":
             typer.echo(json.dumps({"pedigree": str(pedigree), "flb": flb}))
@@ -317,6 +345,19 @@ def batch(
     pattern: Annotated[str, typer.Option(help="File glob pattern.")] = "*.ped",
     workers: Annotated[int, typer.Option("--workers", "-j", help="Parallel workers.")] = 4,
     output_format: Annotated[str, typer.Option("--format")] = "json",
+    manifest: Annotated[
+        bool,
+        typer.Option(
+            "--manifest/--no-manifest", help="Write a run-provenance manifest sidecar per pedigree."
+        ),
+    ] = True,
+    manifest_dir: Annotated[
+        Optional[Path],
+        typer.Option(
+            "--manifest-dir",
+            help="Directory for manifest sidecars (default: next to each pedigree).",
+        ),
+    ] = None,
 ) -> None:
     """Compute FLB for all pedigrees in a directory (parallel)."""
     ped_files = sorted(directory.glob(pattern))
@@ -332,7 +373,12 @@ def batch(
 
     def _run_one(path: Path) -> tuple[str, float | None, str | None]:
         try:
-            flb = runner.run(path, pipeline_config)
+            if manifest:
+                run_manifest = runner.run_with_manifest(path, pipeline_config)
+                _write_manifest(run_manifest, path, manifest_dir)
+                flb = run_manifest.flb
+            else:
+                flb = runner.run(path, pipeline_config)
             return (path.name, flb, None)
         except Exception as exc:  # noqa: BLE001
             return (path.name, None, str(exc))
