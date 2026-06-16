@@ -55,6 +55,12 @@ plugins:
 
 Full documentation: [https://heredicalc.github.io/heredicalc](https://heredicalc.github.io/heredicalc)
 
+## Data
+
+The code is MIT-licensed; the CI5 incidence data is © IARC and is **not** distributed
+with this repository. Obtain it separately under IARC's terms by running
+`python scripts/fetch_ci5_data.py` (see [DATA-NOTICE.md](DATA-NOTICE.md)).
+
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md).
