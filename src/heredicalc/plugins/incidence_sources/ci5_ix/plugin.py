@@ -3,15 +3,18 @@
 from __future__ import annotations
 
 import re
-from importlib.resources import files as _files
 from pathlib import Path
 
 import pandas as pd
 
 from heredicalc.core.models.plugin import PluginMeta, SourceInfo, TraitInfo
 from heredicalc.core.pipeline.types import INCIDENCE_SCHEMA, validate_frame
+from heredicalc.plugins.incidence_sources._data_dir import ci5_data_dir
 
-_DATA = _files(__package__) / "data"
+
+def _data() -> Path:
+    return ci5_data_dir(__package__)
+
 
 # Age group → (age_start, age_end). Group 18 extended to 99; group 19 excluded.
 # CI5-IX aggregate summary codes that must be excluded to avoid double-counting.
@@ -65,7 +68,7 @@ class CI5IXIncidenceSource:
     def _load_registry(self) -> dict[str, str]:
         if self._sources is None:
             self._sources = {}
-            registry_path = Path(str(_DATA / "registry.txt"))
+            registry_path = _data() / "registry.txt"
             with open(registry_path, encoding="latin-1") as f:
                 for line in f:
                     line = line.rstrip("\n\r")
@@ -108,9 +111,7 @@ class CI5IXIncidenceSource:
                 f"Available: {sorted(sources)}"
             )
         if len(matches) > 1:
-            raise ValueError(
-                f"Ambiguous CI5-IX identifier {identifier!r} matches: {matches}"
-            )
+            raise ValueError(f"Ambiguous CI5-IX identifier {identifier!r} matches: {matches}")
         return matches[0]
 
     def load(self, source_id: str) -> pd.DataFrame:
@@ -119,17 +120,22 @@ class CI5IXIncidenceSource:
         :return: ValidatedIncidenceFrame.
         :raises FileNotFoundError: If the CSV for *source_id* is not bundled.
         """
-        csv_path = Path(str(_DATA / f"{source_id}.csv"))
+        csv_path = _data() / f"{source_id}.csv"
         if not csv_path.exists():
             raise FileNotFoundError(
-                f"CI5-IX data file not found: {csv_path}. "
-                "Ensure the data directory is populated."
+                f"CI5-IX data file not found: {csv_path}. Ensure the data directory is populated."
             )
         df = pd.read_csv(
             csv_path,
             header=None,
             names=["sex", "trait", "age_group", "cases", "person_years"],
-            dtype={"sex": int, "trait": str, "age_group": int, "cases": float, "person_years": float},
+            dtype={
+                "sex": int,
+                "trait": str,
+                "age_group": int,
+                "cases": float,
+                "person_years": float,
+            },
         )
         return self._normalise(df)
 
@@ -155,7 +161,7 @@ class CI5IXIncidenceSource:
         :raises KeyError: If *trait_code* is not in the CI5-IX cancer dictionary.
         """
         if self._trait_dict is None:
-            self._trait_dict = _load_ix_cancer_dict(Path(str(_DATA)))
+            self._trait_dict = _load_ix_cancer_dict(_data())
         zfill = trait_code.zfill(3)
         if zfill not in self._trait_dict:
             raise KeyError(f"Trait code {trait_code!r} not found in CI5-IX dictionary")

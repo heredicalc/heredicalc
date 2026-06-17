@@ -3,16 +3,19 @@
 from __future__ import annotations
 
 import re
-from importlib.resources import files as _files
 from pathlib import Path
 
 import pandas as pd
 
 from heredicalc.core.models.plugin import PluginMeta, SourceInfo, TraitInfo
 from heredicalc.core.pipeline.types import INCIDENCE_SCHEMA, validate_frame
+from heredicalc.plugins.incidence_sources._data_dir import ci5_data_dir
 from heredicalc.plugins.incidence_sources.ci5_ix.plugin import _AGE_GROUPS, _split_name_period
 
-_DATA = _files(__package__) / "data"
+
+def _data() -> Path:
+    return ci5_data_dir(__package__)
+
 
 # CI5-VIII uses sequential integer registry IDs — map int → source_id string.
 _ID_RE = re.compile(r"^\s*(\d+)\s+\*?(.+)$")
@@ -46,7 +49,7 @@ class CI5VIIIIncidenceSource:
     def _ensure_registry(self) -> dict[str, tuple[str, str]]:
         if self._registry is None:
             self._registry = {}
-            registry_path = Path(str(_DATA / "registry.txt"))
+            registry_path = _data() / "registry.txt"
             with open(registry_path, encoding="latin-1") as f:
                 for line in f:
                     line = line.rstrip("\n\r")
@@ -64,7 +67,7 @@ class CI5VIIIIncidenceSource:
 
     def _ensure_raw_df(self) -> pd.DataFrame:
         if self._raw_df is None:
-            csv_path = Path(str(_DATA / "CI5-VIII.csv"))
+            csv_path = _data() / "CI5-VIII.csv"
             if not csv_path.exists():
                 raise FileNotFoundError(
                     f"CI5-VIII data file not found: {csv_path}. "
@@ -106,10 +109,7 @@ class CI5VIIIIncidenceSource:
         registry = self._ensure_registry()
         if identifier in registry:
             return identifier
-        matches = [
-            sid for sid, (name, _) in registry.items()
-            if identifier.lower() in name.lower()
-        ]
+        matches = [sid for sid, (name, _) in registry.items() if identifier.lower() in name.lower()]
         if not matches:
             raise ValueError(
                 f"No CI5-VIII source found for identifier {identifier!r}. "
@@ -117,9 +117,7 @@ class CI5VIIIIncidenceSource:
                 f"(use sequential integer ID or name substring)"
             )
         if len(matches) > 1:
-            raise ValueError(
-                f"Ambiguous CI5-VIII identifier {identifier!r} matches: {matches}"
-            )
+            raise ValueError(f"Ambiguous CI5-VIII identifier {identifier!r} matches: {matches}")
         return matches[0]
 
     def load(self, source_id: str) -> pd.DataFrame:
@@ -156,7 +154,7 @@ class CI5VIIIIncidenceSource:
 
     def _load_cancer_dict(self) -> dict[str, str]:
         result: dict[str, str] = {}
-        cancer_path = Path(str(_DATA / "cancer.txt"))
+        cancer_path = _data() / "cancer.txt"
         if not cancer_path.exists():
             return result
         with open(cancer_path, encoding="latin-1") as f:
