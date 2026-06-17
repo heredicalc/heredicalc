@@ -18,6 +18,7 @@ from heredicalc.core.pipeline.config import ComputationConfig, PipelineConfig, P
 from heredicalc.core.pipeline.manifest import RunManifest
 from heredicalc.core.pipeline.runner import PipelineRunner
 from heredicalc.core.registry.registry import PluginRegistry
+from tests._ci5_support import requires_real_ci5_data
 
 _FIXTURES_DIR = Path(__file__).parent.parent / "fixtures"
 _PEDIGREES_DIR = _FIXTURES_DIR / "pedigrees"
@@ -71,6 +72,7 @@ def _get_registry() -> PluginRegistry:
     return _REGISTRY
 
 
+@requires_real_ci5_data
 @pytest.mark.skipif(_CASE is None, reason="reference case not found in validation_fixtures.json")
 def test_run_with_manifest_reference_case() -> None:
     assert _CASE is not None

@@ -7,6 +7,8 @@ from pathlib import Path
 
 import pytest
 
+from tests._ci5_support import requires_real_ci5_data
+
 pytest.importorskip("streamlit")
 
 _APP = Path(__file__).parent.parent.parent / "src" / "heredicalc" / "apps" / "web" / "app.py"
@@ -58,6 +60,7 @@ def test_population_value_is_source_id() -> None:
     assert at.selectbox(key="population").value == "54280099"
 
 
+@requires_real_ci5_data
 @pytest.mark.skipif(shutil.which("Rscript") is None, reason="Rscript not available")
 def test_demo_run_yields_reference_flb() -> None:
     from streamlit.testing.v1 import AppTest
