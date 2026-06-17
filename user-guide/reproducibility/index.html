@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://heredicalc.readthedocs.io/user-guide/web/">
+        <link rel="canonical" href="https://heredicalc.readthedocs.io/user-guide/reproducibility/">
       
       
-        <link rel="prev" href="../gui/">
+        <link rel="prev" href="../config-file/">
       
       
-        <link rel="next" href="../../tutorials/user-tutorial/">
+        <link rel="next" href="../gui/">
       
       
         
@@ -27,7 +27,7 @@
     
     
       
-        <title>Web App - HerediCalc</title>
+        <title>Reproducibility - HerediCalc</title>
       
     
     
@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#web-application" class="md-skip">
+        <a href="#reproducibility-provenance" class="md-skip">
           Skip to content
         </a>
       
@@ -114,7 +114,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Web App
+              Reproducibility
             
           </span>
         </div>
@@ -536,10 +536,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../reproducibility/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reproducibility
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -555,6 +582,70 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#when-is-a-manifest-written" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        When is a manifest written?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#schema" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Schema
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-manifest" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example manifest
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#programmatic-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Programmatic access
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -592,37 +683,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Web App
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../web/" class="md-nav__link">
         
   
   
@@ -638,120 +702,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#launch" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Launch
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#parameters" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Parameters
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Parameters">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#population-dropdown" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Population dropdown
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#dependent-plugin-coupling" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Dependent plugin coupling
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#providing-pedigrees" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Providing pedigrees
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#results-and-manifests" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Results and manifests
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#external-plugins-in-the-dropdowns" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        External plugins in the dropdowns
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#error-handling" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Error handling
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1447,154 +1397,192 @@
   
 
 
-<h1 id="web-application">Web Application<a class="headerlink" href="#web-application" title="Permanent link">&para;</a></h1>
-<p>The Streamlit frontend is a minimal researcher UI over the <strong>same core pipeline</strong>
-as the CLI. It computes the FLB factor for one or more pedigrees and produces a
-downloadable run-provenance manifest for every run — identical to what the CLI
-emits, because both call <code>PipelineRunner.run_with_manifest</code> through the shared
-<code>build_config_from_dict</code> helper.</p>
-<h2 id="launch">Launch<a class="headerlink" href="#launch" title="Permanent link">&para;</a></h2>
-<p>Install the web extra and start the app:</p>
-<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[web]&quot;</span>
-streamlit<span class="w"> </span>run<span class="w"> </span>src/heredicalc/apps/web/app.py
+<h1 id="reproducibility-provenance">Reproducibility &amp; Provenance<a class="headerlink" href="#reproducibility-provenance" title="Permanent link">&para;</a></h1>
+<p>Every FLB run can emit a <strong>run-provenance manifest</strong>: a single machine-readable
+JSON document that records everything needed to reproduce the result — the
+resolved configuration, the exact plugin versions that ran, the Python and R
+environments, and a content hash of each input pedigree.</p>
+<p>The manifest is produced by the core <code>PipelineRunner</code>, so the CLI and the
+Streamlit frontend share one implementation and emit byte-for-byte identical
+manifests for the same run.</p>
+<h2 id="when-is-a-manifest-written">When is a manifest written?<a class="headerlink" href="#when-is-a-manifest-written" title="Permanent link">&para;</a></h2>
+<p>Manifests are <strong>on by default</strong> for both <code>run</code> and <code>batch</code>. Each run writes a
+sidecar file named <code>&lt;pedigree-stem&gt;.manifest.json</code> next to the pedigree:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Writes Belman.manifest.json next to Belman.ped</span>
+heredicalc<span class="w"> </span>run<span class="w"> </span>Belman.ped<span class="w"> </span>-c<span class="w"> </span>config.yml
+
+<span class="c1"># All sidecars collected in one directory</span>
+heredicalc<span class="w"> </span>run<span class="w"> </span>Belman.ped<span class="w"> </span>-c<span class="w"> </span>config.yml<span class="w"> </span>--manifest-dir<span class="w"> </span>./manifests
+
+<span class="c1"># Disable manifest generation entirely</span>
+heredicalc<span class="w"> </span>run<span class="w"> </span>Belman.ped<span class="w"> </span>-c<span class="w"> </span>config.yml<span class="w"> </span>--no-manifest
+
+<span class="c1"># batch behaves identically, one manifest per pedigree</span>
+heredicalc<span class="w"> </span>batch<span class="w"> </span>./pedigrees<span class="w"> </span>-c<span class="w"> </span>config.yml<span class="w"> </span>--manifest-dir<span class="w"> </span>./manifests
 </code></pre></div>
-<p>The app opens in your browser (default <a href="http://localhost:8501">http://localhost:8501</a>).</p>
-<h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
-<p>The form is pre-filled with the primary Belman reference case
-(<code>brca1_belman_latvia_ci5ix</code>, <code>victor</code>):</p>
+<p>The manifest is <strong>always a separate file</strong> — it is never part of <code>stdout</code>. The
+existing <code>stdout</code> contract is unchanged, including <code>--format json</code>, which still
+prints only <code>{"pedigree": ..., "flb": ...}</code>. The path of each written manifest is
+reported on <code>stderr</code>.</p>
+<h2 id="schema">Schema<a class="headerlink" href="#schema" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th>Widget</th>
-<th>Default</th>
-<th>Notes</th>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Genetic entity</td>
-<td><code>BRCA1</code></td>
-<td>Free text</td>
+<td><code>heredicalc_version</code></td>
+<td><code>str</code></td>
+<td>Installed HerediCalc version (<code>importlib.metadata</code>).</td>
 </tr>
 <tr>
-<td>Allele frequency</td>
-<td><code>0.0001</code></td>
-<td>Hardy-Weinberg prior</td>
+<td><code>python_version</code></td>
+<td><code>str</code></td>
+<td>Running CPython version, e.g. <code>3.12.5</code>.</td>
 </tr>
 <tr>
-<td>Age bands</td>
-<td><code>30,40,50,60,65,70,80</code></td>
-<td>Comma-separated integers</td>
+<td><code>python_packages</code></td>
+<td><code>dict[str, str]</code></td>
+<td>Versions of the declared runtime dependencies plus <code>heredicalc</code>.</td>
 </tr>
 <tr>
-<td>Incidence source</td>
-<td><code>ci5_ix</code></td>
-<td>Dropdown of <strong>registered</strong> incidence sources</td>
+<td><code>r_session</code></td>
+<td><code>object \| null</code></td>
+<td>R version, platform, and all namespaces loaded after the <code>FLB()</code> call (<code>null</code> if the calculator exposes no session info).</td>
 </tr>
 <tr>
-<td>Phenotype model</td>
-<td><code>hbopc</code></td>
-<td>Dropdown of <strong>registered</strong> phenotype models</td>
+<td><code>resolved_config</code></td>
+<td><code>object</code></td>
+<td>The <code>PipelineConfig</code> <strong>after</strong> the penetrance-model defaults cascade — the effective parameters, not the raw input.</td>
 </tr>
 <tr>
-<td>Population</td>
-<td><code>Latvia</code></td>
-<td>Dropdown from the source's <code>list_sources()</code>; value is the <code>source_id</code></td>
+<td><code>inputs</code></td>
+<td><code>list</code></td>
+<td>One entry per pedigree file: <code>filename</code> and the SHA-256 over its raw bytes.</td>
 </tr>
 <tr>
-<td>Trait mapper</td>
-<td><code>ci5_ix_hbopc</code></td>
-<td>Dropdown of mappers <strong>compatible</strong> with the source + phenotype model</td>
+<td><code>plugins</code></td>
+<td><code>list</code></td>
+<td><code>kind</code>, <code>name</code>, and <code>version</code> for <strong>all ten</strong> plugin selections, including the injected <code>rr_model</code> and <code>crhf_model</code> sub-plugins.</td>
 </tr>
 <tr>
-<td>RR model</td>
-<td><code>tabular</code></td>
-<td>Dropdown of registered RR models compatible with the selection</td>
+<td><code>timestamp_utc</code></td>
+<td><code>str</code></td>
+<td>Run time as an ISO 8601 UTC timestamp.</td>
 </tr>
 <tr>
-<td>CRHF model</td>
-<td><code>lookup</code></td>
-<td>Dropdown of registered CRHF models compatible with the selection</td>
+<td><code>flb</code></td>
+<td><code>float</code></td>
+<td>The computed FLB factor (identical to the <code>run</code> output).</td>
 </tr>
 </tbody>
 </table>
-<p>Every dropdown is populated from the registry discovered by <code>build_registry()</code> /
-<code>discover_all()</code> — never from a hardcoded list — so externally installed plugins
-appear automatically (see <a href="#external-plugins-in-the-dropdowns">External plugins in the dropdowns</a>).</p>
-<p>The model backbone (<code>hazard_model</code>, <code>penetrance_model=victor</code>,
-<code>liability_assigner</code>, <code>flb_calculator=segregatr</code>, <code>pedigree_format=cool3_tsv</code>) is
-fixed to the reference defaults and shown in the <em>Fixed model &amp; plugins</em> panel.</p>
-<h3 id="population-dropdown">Population dropdown<a class="headerlink" href="#population-dropdown" title="Permanent link">&para;</a></h3>
-<p>The population is a dropdown filled from the selected incidence source's
-<code>list_sources()</code>. Each entry shows the <strong>full registry name</strong> plus study period —
-so registries that share a prefix stay distinct (e.g. <code>USA, SEER (9 Registries)</code>,
-<code>USA, SEER (9 Registries): Black</code>, and the various <code>Korea, …</code> registries are all
-separately selectable).</p>
-<p>The selection <strong>value</strong> is the registry's unambiguous <code>source_id</code>, and that
-<code>source_id</code> is passed as <code>params["population"]</code>. The runner resolves it through
-<code>find_source_id</code>'s exact-ID branch, so there is no substring ambiguity (a name
-like <code>Korea</code> no longer matches many registries). Changing the incidence source
-refreshes the list; a source that exposes no populations shows a clear error.</p>
-<h3 id="dependent-plugin-coupling">Dependent plugin coupling<a class="headerlink" href="#dependent-plugin-coupling" title="Permanent link">&para;</a></h3>
-<p>The trait-mapper, RR-model, and CRHF-model dropdowns are derived from the current
-selections using the plugins' declared <code>compatible_with</code>/<code>requires</code> metadata — the
-same mechanism the registry uses for compatibility validation, so no plugin names
-are hardcoded:</p>
+<p>Notes:</p>
 <ul>
-<li><strong>Trait mapper</strong> declares <code>compatible_with = {incidence_source, phenotype_model}</code>,
-  so its list is restricted to mappers compatible with <em>both</em> the chosen incidence
-  source and phenotype model.</li>
-<li><strong>RR model / CRHF model</strong> are present because the fixed <code>penetrance_model</code>
-  (<code>victor</code>) declares <code>requires = {rr_model, crhf_model}</code>; the app derives which
-  sub-plugin kinds to offer from that <code>requires</code>. The built-in <code>tabular</code>/<code>lookup</code>
-  declare no <code>compatible_with</code>, so they are universally compatible; a study-specific
-  RR/CRHF plugin that declares <code>compatible_with = {phenotype_model: [...]}</code> is
-  filtered to the matching phenotype models by the same rule.</li>
+<li><strong><code>resolved_config</code></strong> is captured after the cascade, so plugin-specific defaults
+  (e.g. <code>victor_cool3</code> selecting <code>annual_rate_cool3</code> as its <code>hazard_model</code>) are
+  recorded as the values that actually ran.</li>
+<li><strong><code>inputs[].sha256</code></strong> is computed over the raw file bytes, so it is stable and
+  reproducible across machines for an unchanged pedigree.</li>
+<li><strong><code>plugins</code></strong> is derived from <code>resolved_config</code> via the registry, capturing the
+  resolved version of every selected plugin — including sub-plugins that are
+  injected into other plugins and never instantiated directly by the runner.</li>
+<li><strong><code>r_session</code></strong> comes from the <code>segregatr</code> R subprocess, which reports its
+  version, platform, and <code>loadedNamespaces()</code> in the same JSON object as the FLB.</li>
 </ul>
-<p>When you change the incidence source or phenotype model, the dependent dropdowns
-update automatically. If no compatible plugin exists for a kind, the app shows a
-clear error instead of running.</p>
-<h2 id="providing-pedigrees">Providing pedigrees<a class="headerlink" href="#providing-pedigrees" title="Permanent link">&para;</a></h2>
-<p>Three ways, in precedence order:</p>
-<ol>
-<li><strong>Upload</strong> one or more COOL3 TSV <code>.ped</code> files (<code>Upload COOL3 TSV pedigrees</code>).</li>
-<li><strong>Paste</strong> a single pedigree into the text area.</li>
-<li><strong>Load demo</strong> — loads the bundled Belman pedigree and resets the parameters to
-   the reference values. Clicking <strong>Run FLB</strong> then yields FLB ≈ 25.65.</li>
-</ol>
-<p>Uploaded files are written to temporary files (the runner takes a path) and
-cleaned up after the run.</p>
-<h2 id="results-and-manifests">Results and manifests<a class="headerlink" href="#results-and-manifests" title="Permanent link">&para;</a></h2>
-<ul>
-<li>A single pedigree shows its FLB prominently; multiple pedigrees produce a
-  results table (pedigree, FLB, status).</li>
-<li>Each successful run offers a <strong><code>&lt;pedigree&gt;.manifest.json</code></strong> download
-  (<code>RunManifest.model_dump_json</code>); with several pedigrees you can also download
-  <strong>all manifests as a ZIP</strong>.</li>
-<li>An expandable <strong>Provenance</strong> panel per run shows the manifest's
-  <code>resolved_config</code> and <code>r_session</code>.</li>
-</ul>
-<h2 id="external-plugins-in-the-dropdowns">External plugins in the dropdowns<a class="headerlink" href="#external-plugins-in-the-dropdowns" title="Permanent link">&para;</a></h2>
-<p>Because every dropdown is fed from the discovered registry, study-specific plugins
-loaded via <code>HEREDICALC_PLUGIN_PATH</code> appear automatically alongside the built-ins —
-no code change to the app. Point HerediCalc at your plugin directory before
-launching:</p>
-<div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">HEREDICALC_PLUGIN_PATH</span><span class="o">=</span>~/my_project/plugins
-streamlit<span class="w"> </span>run<span class="w"> </span>src/heredicalc/apps/web/app.py
+<h2 id="example-manifest">Example manifest<a class="headerlink" href="#example-manifest" title="Permanent link">&para;</a></h2>
+<p>Produced by the primary validation case <code>brca1_belman_latvia_ci5ix</code>
+(<code>penetrance_model: victor</code>). The <code>loaded_namespaces</code> map is abbreviated here:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;heredicalc_version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;4.1.0&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;python_version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;3.12.5&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;python_packages&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;pandas&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2.3.2&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;numpy&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2.3.2&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;pydantic&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2.13.4&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;packaging&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;25.0&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;platformdirs&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;4.4.0&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;PyYAML&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;6.0.3&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;typer&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.25.1&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;rich&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;15.0.0&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;heredicalc&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;4.1.0&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;r_session&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;r_version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;R version 4.4.1 (2024-06-14)&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;platform&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;aarch64-apple-darwin20&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;loaded_namespaces&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;base&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;4.4.1&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;pedtools&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2.7.0&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;segregatr&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.5.0&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;stats&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;4.4.1&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;utils&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;4.4.1&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;resolved_config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;computation&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;genetic_entity&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;BRCA1&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;allele_freq&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0001</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;plugins&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;incidence_source&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ci5_ix&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;phenotype_model&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;hbopc&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;trait_mapper&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ci5_ix_hbopc&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;hazard_model&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;annual_rate&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;penetrance_model&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;victor&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;rr_model&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;tabular&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;crhf_model&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;lookup&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;liability_assigner&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;victor_standard&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;flb_calculator&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;segregatr&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;pedigree_format&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cool3_tsv&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;params&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;population&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Latvia&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;age_bands&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">30</span><span class="p">,</span><span class="w"> </span><span class="mi">40</span><span class="p">,</span><span class="w"> </span><span class="mi">50</span><span class="p">,</span><span class="w"> </span><span class="mi">60</span><span class="p">,</span><span class="w"> </span><span class="mi">65</span><span class="p">,</span><span class="w"> </span><span class="mi">70</span><span class="p">,</span><span class="w"> </span><span class="mi">80</span><span class="p">],</span>
+<span class="w">        </span><span class="nt">&quot;rr_model&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;tabular&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;crhf_model&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;lookup&quot;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;inputs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;filename&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Belman.ped&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;sha256&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;57d5eca9fa68803e21a997ab79cbf203415bea49760e0a47fd2cef4b9904d52e&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;plugins&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;kind&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;pedigree_format&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cool3_tsv&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1.0.0&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;kind&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;phenotype_model&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;hbopc&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1.0.0&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;kind&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;incidence_source&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ci5_ix&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1.0.0&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;kind&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;trait_mapper&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ci5_ix_hbopc&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1.0.0&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;kind&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;hazard_model&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;annual_rate&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1.0.0&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;kind&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;penetrance_model&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;victor&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1.0.0&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;kind&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;liability_assigner&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;victor_standard&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1.0.0&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;kind&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;flb_calculator&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;segregatr&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1.0.0&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;kind&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;rr_model&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;tabular&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1.0.0&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;kind&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;crhf_model&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;lookup&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1.0.0&quot;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;timestamp_utc&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2026-06-14T10:56:01.381292+00:00&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;flb&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">25.6540503665</span>
+<span class="p">}</span>
 </code></pre></div>
-<p>A new <code>phenotype_model</code> shows up in the phenotype dropdown; a new
-<code>incidence_source</code> adds its populations; and a <code>trait_mapper</code>/<code>rr_model</code>/<code>crhf_model</code>
-that declares the appropriate <code>compatible_with</code> is offered automatically whenever
-its declared selection is active. See
-<a href="../../plugins/external-plugins/">External Plugins</a> for the plugin file layout and
-discovery rules.</p>
-<h2 id="error-handling">Error handling<a class="headerlink" href="#error-handling" title="Permanent link">&para;</a></h2>
-<p>Parsing and validation are delegated to the <code>pedigree_format</code> plugin. Invalid or
-empty pedigrees, parse errors, a missing <code>Rscript</code>, or R-side failures are caught
-and shown as a friendly <code>st.error</code> message — never a stack trace. In a batch, one
-failing pedigree does not abort the others: its row is marked <code>error</code> with a short
-reason while the rest complete. A genetic entity with no RR/CRHF data surfaces the
-same way — a clear error row, not a crash.</p>
+<h2 id="programmatic-access">Programmatic access<a class="headerlink" href="#programmatic-access" title="Permanent link">&para;</a></h2>
+<p>The manifest is a Pydantic model, so any frontend can obtain it directly instead
+of parsing the sidecar:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">heredicalc.core.pipeline.runner</span><span class="w"> </span><span class="kn">import</span> <span class="n">PipelineRunner</span>
+
+<span class="n">manifest</span> <span class="o">=</span> <span class="n">PipelineRunner</span><span class="p">(</span><span class="n">registry</span><span class="o">=</span><span class="n">registry</span><span class="p">)</span><span class="o">.</span><span class="n">run_with_manifest</span><span class="p">(</span>
+    <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;Belman.ped&quot;</span><span class="p">),</span> <span class="n">config</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">manifest</span><span class="o">.</span><span class="n">flb</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">manifest</span><span class="o">.</span><span class="n">model_dump_json</span><span class="p">(</span><span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
+</code></pre></div>
+<p><code>run()</code> remains unchanged and returns the bare FLB <code>float</code>; <code>run_with_manifest()</code>
+runs the same pipeline and additionally assembles the manifest.</p>
 
 
 

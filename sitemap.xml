@@ -2,82 +2,86 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://heredicalc.readthedocs.io/</loc>
-         <lastmod>2026-05-30</lastmod>
+         <lastmod>2026-06-17</lastmod>
     </url>
     <url>
          <loc>https://heredicalc.readthedocs.io/algorithms/competing-risk-model/</loc>
-         <lastmod>2026-05-30</lastmod>
+         <lastmod>2026-06-17</lastmod>
     </url>
     <url>
          <loc>https://heredicalc.readthedocs.io/algorithms/flb-computation/</loc>
-         <lastmod>2026-05-30</lastmod>
+         <lastmod>2026-06-17</lastmod>
     </url>
     <url>
          <loc>https://heredicalc.readthedocs.io/algorithms/victor-model/</loc>
-         <lastmod>2026-05-30</lastmod>
+         <lastmod>2026-06-17</lastmod>
     </url>
     <url>
          <loc>https://heredicalc.readthedocs.io/api/</loc>
-         <lastmod>2026-05-30</lastmod>
+         <lastmod>2026-06-17</lastmod>
     </url>
     <url>
          <loc>https://heredicalc.readthedocs.io/management/model-editor/</loc>
-         <lastmod>2026-05-30</lastmod>
+         <lastmod>2026-06-17</lastmod>
     </url>
     <url>
          <loc>https://heredicalc.readthedocs.io/management/pedigree-library/</loc>
-         <lastmod>2026-05-30</lastmod>
+         <lastmod>2026-06-17</lastmod>
     </url>
     <url>
          <loc>https://heredicalc.readthedocs.io/plugins/external-plugins/</loc>
-         <lastmod>2026-05-30</lastmod>
+         <lastmod>2026-06-17</lastmod>
     </url>
     <url>
          <loc>https://heredicalc.readthedocs.io/plugins/penetrance-models/</loc>
-         <lastmod>2026-05-30</lastmod>
+         <lastmod>2026-06-17</lastmod>
     </url>
     <url>
          <loc>https://heredicalc.readthedocs.io/plugins/plugin-dependencies/</loc>
-         <lastmod>2026-05-30</lastmod>
+         <lastmod>2026-06-17</lastmod>
     </url>
     <url>
          <loc>https://heredicalc.readthedocs.io/plugins/plugin-kinds/</loc>
-         <lastmod>2026-05-30</lastmod>
+         <lastmod>2026-06-17</lastmod>
     </url>
     <url>
          <loc>https://heredicalc.readthedocs.io/plugins/trait-mappers/</loc>
-         <lastmod>2026-05-30</lastmod>
+         <lastmod>2026-06-17</lastmod>
     </url>
     <url>
          <loc>https://heredicalc.readthedocs.io/plugins/version-constraints/</loc>
-         <lastmod>2026-05-30</lastmod>
+         <lastmod>2026-06-17</lastmod>
     </url>
     <url>
          <loc>https://heredicalc.readthedocs.io/plugins/writing-plugins/</loc>
-         <lastmod>2026-05-30</lastmod>
+         <lastmod>2026-06-17</lastmod>
     </url>
     <url>
          <loc>https://heredicalc.readthedocs.io/tutorials/plugin-developer-tutorial/</loc>
-         <lastmod>2026-05-30</lastmod>
+         <lastmod>2026-06-17</lastmod>
     </url>
     <url>
          <loc>https://heredicalc.readthedocs.io/tutorials/user-tutorial/</loc>
-         <lastmod>2026-05-30</lastmod>
+         <lastmod>2026-06-17</lastmod>
     </url>
     <url>
          <loc>https://heredicalc.readthedocs.io/user-guide/cli/</loc>
-         <lastmod>2026-05-30</lastmod>
+         <lastmod>2026-06-17</lastmod>
     </url>
     <url>
          <loc>https://heredicalc.readthedocs.io/user-guide/config-file/</loc>
-         <lastmod>2026-05-30</lastmod>
+         <lastmod>2026-06-17</lastmod>
     </url>
     <url>
          <loc>https://heredicalc.readthedocs.io/user-guide/gui/</loc>
-         <lastmod>2026-05-30</lastmod>
+         <lastmod>2026-06-17</lastmod>
+    </url>
+    <url>
+         <loc>https://heredicalc.readthedocs.io/user-guide/reproducibility/</loc>
+         <lastmod>2026-06-17</lastmod>
     </url>
     <url>
          <loc>https://heredicalc.readthedocs.io/user-guide/web/</loc>
-         <lastmod>2026-05-30</lastmod>
+         <lastmod>2026-06-17</lastmod>
     </url>
 </urlset>
