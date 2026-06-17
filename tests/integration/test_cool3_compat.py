@@ -17,6 +17,7 @@ import pytest
 from heredicalc.core.pipeline.config import ComputationConfig, PipelineConfig, PluginConfig
 from heredicalc.core.pipeline.runner import PipelineRunner
 from heredicalc.core.registry.registry import PluginRegistry
+from tests._ci5_support import requires_real_ci5_data
 
 _FIXTURES_DIR = Path(__file__).parent.parent / "fixtures"
 _PEDIGREES_DIR = _FIXTURES_DIR / "pedigrees"
@@ -66,6 +67,7 @@ def _get_registry() -> PluginRegistry:
     return _REGISTRY
 
 
+@requires_real_ci5_data
 @pytest.mark.skipif(not _CASES, reason="validation_fixtures_cool3.json not found")
 @pytest.mark.parametrize(
     "case",

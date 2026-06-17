@@ -7,7 +7,13 @@ from pathlib import Path
 
 import pytest
 
+from tests._ci5_support import ensure_ci5_data_env
+
 FIXTURES_DIR = Path(__file__).parent / "fixtures"
+
+# Without the full packaged CI5 data, point the incidence-source plugins at the
+# de-minimis mini fixtures so the structural adapter tests run fast and offline.
+ensure_ci5_data_env()
 
 
 @pytest.fixture
