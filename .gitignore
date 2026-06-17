@@ -42,3 +42,10 @@ site/
 # Environment files
 .env
 .env.*
+
+# CI5 incidence data (© IARC, not distributed — fetch via scripts/fetch_ci5_data.py)
+src/heredicalc/plugins/incidence_sources/ci5_viii/data/
+src/heredicalc/plugins/incidence_sources/ci5_ix/data/
+src/heredicalc/plugins/incidence_sources/ci5_x/data/
+src/heredicalc/plugins/incidence_sources/ci5_xi/data/
+src/heredicalc/plugins/incidence_sources/ci5_xii/data/
