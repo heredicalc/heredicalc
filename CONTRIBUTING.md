@@ -59,3 +59,17 @@ See [docs/plugins/writing-plugins.md](docs/plugins/writing-plugins.md).
 2. Implement changes with accompanying tests and docs
 3. Ensure `pytest` and `mkdocs build --strict` pass
 4. Open a PR against `main`
+
+## Releasing
+
+Pushing a `v*` tag (e.g. `v4.2.0`) to this repository triggers two workflows, both
+operating on the canonical repo itself with the automatic `GITHUB_TOKEN`:
+
+- **ci.yml** runs the `full-validation` lane — it fetches the CI5 data and runs the
+  complete suite including FLB validation. This is where the tag is verified; the
+  release workflow does not re-test.
+- **release.yml** builds the sdist + wheel (hatch-vcs), creates a GitHub Release in
+  this repo with notes extracted from `CHANGELOG.md` and the build artifacts attached,
+  and deploys the documentation to the `gh-pages` branch via `mkdocs gh-deploy`.
+
+PyPI publishing is intentionally deferred and will be added later.
