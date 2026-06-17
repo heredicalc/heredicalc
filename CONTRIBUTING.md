@@ -15,6 +15,25 @@ pytest tests/ --tb=short
 mkdocs build --strict
 ```
 
+## CI5 incidence data
+
+The CI5 incidence data is © IARC and is **not** committed (see
+[DATA-NOTICE.md](DATA-NOTICE.md)). The test suite runs in two modes, selected
+automatically by whether the full data is installed in the package:
+
+- **Without the data** (default): the incidence-source plugins fall back to the
+  de-minimis mini fixtures under `tests/fixtures/ci5_mini/` (via the
+  `HEREDICALC_CI5_DATA_DIR` environment variable), and the real-FLB validation tests
+  are skipped. This is the fast CI lane — quick and offline.
+- **With the data**: run `python scripts/fetch_ci5_data.py` to install the full data
+  into the package, then `pytest` runs the complete suite including FLB validation.
+  This is the `full-validation` CI lane (manual `workflow_dispatch` and on `v*` tags,
+  with the IARC download cached).
+
+Set `HEREDICALC_CI5_DATA_DIR=/path/to/data` to point the plugins at a CI5 data tree
+outside the package (each band under `<dir>/<band>/`); unset, the packaged `data/`
+directory is used.
+
 ## Commit Convention
 
 We use [Conventional Commits](https://www.conventionalcommits.org/):
