@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import re
-from importlib.resources import files as _files
 from pathlib import Path
 
 import pandas as pd
@@ -11,13 +10,17 @@ import pandas as pd
 from heredicalc.core.exceptions import DataIntegrityError
 from heredicalc.core.models.plugin import PluginMeta, SourceInfo, TraitInfo
 from heredicalc.core.pipeline.types import INCIDENCE_SCHEMA, validate_frame
+from heredicalc.plugins.incidence_sources._data_dir import ci5_data_dir
 from heredicalc.plugins.incidence_sources.ci5_ix.plugin import _AGE_GROUPS, _split_name_period
 from heredicalc.plugins.incidence_sources.ci5_xi.plugin import (
     _REGISTRY_RE,
     _load_detailed_cancer_dict,
 )
 
-_DATA = _files(__package__) / "data"
+
+def _data() -> Path:
+    return ci5_data_dir(__package__)
+
 
 # Ovary aggregate site in CI5-XII; sub-sites 179-189 are excluded.
 _OVARY_AGGREGATE_CODE = 178
@@ -49,7 +52,7 @@ class CI5XIIIncidenceSource:
     def _load_registry(self) -> dict[str, str]:
         if self._sources is None:
             self._sources = {}
-            path = Path(str(_DATA / "registry_detailed.txt"))
+            path = _data() / "registry_detailed.txt"
             with open(path, encoding="latin-1") as f:
                 for line in f:
                     line = line.rstrip("\n\r")
@@ -69,7 +72,9 @@ class CI5XIIIncidenceSource:
         for source_id, name in sources.items():
             clean, period = _split_name_period(name)
             result.append(
-                SourceInfo(source_id=source_id, name=clean, study_period=period, edition=self._EDITION)
+                SourceInfo(
+                    source_id=source_id, name=clean, study_period=period, edition=self._EDITION
+                )
             )
         return result
 
@@ -93,17 +98,22 @@ class CI5XIIIncidenceSource:
 
         :raises DataIntegrityError: If aggregate ovary site 178 rows are absent.
         """
-        csv_path = Path(str(_DATA / f"{source_id}.csv"))
+        csv_path = _data() / f"{source_id}.csv"
         if not csv_path.exists():
             raise FileNotFoundError(
-                f"CI5-XII data file not found: {csv_path}. "
-                "Ensure the data directory is populated."
+                f"CI5-XII data file not found: {csv_path}. Ensure the data directory is populated."
             )
         df = pd.read_csv(
             csv_path,
             header=None,
             names=["sex", "trait_code", "age_group", "cases", "person_years"],
-            dtype={"sex": int, "trait_code": int, "age_group": int, "cases": float, "person_years": float},
+            dtype={
+                "sex": int,
+                "trait_code": int,
+                "age_group": int,
+                "cases": float,
+                "person_years": float,
+            },
         )
 
         # Assert aggregate ovary rows are present (per plan Section 7 integrity check)
@@ -139,7 +149,7 @@ class CI5XIIIncidenceSource:
     def get_trait_info(self, trait_code: str) -> TraitInfo:
         """Return metadata for *trait_code*."""
         if self._trait_dict is None:
-            self._trait_dict = _load_detailed_cancer_dict(Path(str(_DATA)))
+            self._trait_dict = _load_detailed_cancer_dict(_data())
         zfill = trait_code.zfill(3)
         if zfill not in self._trait_dict:
             raise KeyError(f"Trait code {trait_code!r} not in CI5-XII dictionary")
