@@ -3,17 +3,41 @@ name: CI
 on:
   push:
     branches: [main]
+    tags: ["v*"]
   pull_request:
+  workflow_dispatch:
 
 jobs:
   test:
+    name: Fast tests (mini fixtures)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install Python dependencies
+        run: pip install -e ".[web,dev]"
+
+      # No IARC download and no R: the CI5 data is absent, so the plugins fall back
+      # to the de-minimis mini fixtures and the real-FLB validation tests are skipped.
+      - name: Run tests
+        run: pytest tests/ --tb=short
+
+  full-validation:
+    name: Full validation (fetched CI5 data)
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
 
@@ -30,5 +54,14 @@ jobs:
       - name: Install Python dependencies
         run: pip install -e ".[web,dev]"
 
-      - name: Run tests
+      - name: Cache CI5 downloads
+        uses: actions/cache@v5
+        with:
+          path: ~/.cache/ci5-zips
+          key: ci5-zips-${{ hashFiles('scripts/ci5_checksums.txt') }}
+
+      - name: Fetch CI5 data from IARC
+        run: python scripts/fetch_ci5_data.py --cache-dir ~/.cache/ci5-zips
+
+      - name: Run full test suite (incl. FLB validation)
         run: pytest tests/ --tb=short
