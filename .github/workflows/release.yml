@@ -5,47 +5,21 @@ on:
     tags:
       - "v*"
 
+# Testing is handled by ci.yml (fast lane on every push/PR; full FLB validation on
+# v* tags and via workflow_dispatch). This workflow only builds and publishes from
+# the canonical repository itself, using the automatic GITHUB_TOKEN.
 permissions:
   contents: write
-  id-token: write
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-
-      - uses: r-lib/actions/setup-r@v2
-        with:
-          r-version: "4.2"
-
-      - uses: r-lib/actions/setup-r-dependencies@v2
-        with:
-          packages: |
-            kinship2
-            segregatr
-
-      - name: Install Python dependencies
-        run: pip install -e ".[dev]"
-
-      - name: Run tests
-        run: pytest tests/ --tb=short
-
   build:
-    needs: test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
 
@@ -54,39 +28,28 @@ jobs:
           pip install build hatch-vcs
           python -m build
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: dist
           path: dist/
 
-  publish-public:
+  release:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
-          persist-credentials: false
 
-      - name: Push to public repo
-        run: |
-          git remote add public https://x-access-token:${{ secrets.PUBLIC_REPO_TOKEN }}@github.com/heredicalc/heredicalc.git
-          git push public HEAD:main --force
-          git push public ${{ github.ref }} --force
-
-  release:
-    needs: publish-public
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v8
         with:
-          fetch-depth: 0
-          persist-credentials: false
+          name: dist
+          path: dist/
 
       - name: Extract release notes from CHANGELOG
         run: |
           python3 - <<'EOF'
-          import re, sys
+          import re
           text = open("CHANGELOG.md").read()
           tag = "${{ github.ref_name }}".lstrip("v")
           pattern = rf"(## \[{re.escape(tag)}\].*?)(?=\n## \[|\Z)"
@@ -94,41 +57,27 @@ jobs:
           open("release-notes.md", "w").write(m.group(1).strip() if m else f"Release {tag}")
           EOF
 
-      - name: Create GitHub Release on public repo
+      - name: Create GitHub Release
         env:
-          GH_TOKEN: ${{ secrets.PUBLIC_REPO_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release delete ${{ github.ref_name }} --repo heredicalc/heredicalc --yes 2>/dev/null || true
-          gh release create ${{ github.ref_name }} \
-            --repo heredicalc/heredicalc \
+          gh release delete "${{ github.ref_name }}" --yes 2>/dev/null || true
+          gh release create "${{ github.ref_name }}" \
             --title "${{ github.ref_name }}" \
-            --notes-file release-notes.md
-
-  pypi:
-    needs: build
-    runs-on: ubuntu-latest
-    environment: pypi
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: dist
-          path: dist/
-
-      - name: Publish to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          skip-existing: true
+            --notes-file release-notes.md \
+            dist/*
 
   docs:
-    needs: publish-public
+    needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      # Default persist-credentials: true configures the GITHUB_TOKEN for `origin`,
+      # which `mkdocs gh-deploy` uses to push the built site to the gh-pages branch.
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
-          persist-credentials: false
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
 
@@ -136,10 +85,7 @@ jobs:
         run: pip install -e ".[docs]"
 
       - name: Deploy docs to GitHub Pages
-        env:
-          GH_TOKEN: ${{ secrets.PUBLIC_REPO_TOKEN }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git remote add public https://x-access-token:${GH_TOKEN}@github.com/heredicalc/heredicalc.git
-          mkdocs gh-deploy --remote-name public --force
+          mkdocs gh-deploy --force
