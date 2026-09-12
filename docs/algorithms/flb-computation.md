@@ -95,6 +95,33 @@ Every pedigree member is assigned a **liability class index** by the
 The `victor_standard` assigner implements this matching. The zero-based index
 is passed to `segregatr` as the `liability_class` column.
 
+### Affected Members Without Penetrance Data
+
+A penetrance model can legitimately have no data for a subgroup. For example,
+when the incidence source and RR model only cover women, VICTOR emits male rows
+whose penetrance is zero for every genotype. Unaffected members of such a group
+are assigned as usual: a zero probability of being affected makes them
+uninformative, and the FLB is unaffected. An **affected** member of such a
+group, however, has probability zero under every genotype, so the likelihood
+is zero under both hypotheses and `segregatr` would return `0/0 = NaN`.
+
+HerediCalc raises `heredicalc.core.exceptions.ZeroPenetranceError` instead of
+returning `NaN`. The exception carries the member's `individual_id`, the
+`group` that lacks data (sex, phenotype, age band), a `reason`, and, where
+known, the `pedigree_id`:
+
+- `victor_standard` raises when an affected member is matched to a row whose
+  penetrance values are all zero or undefined (`NaN`).
+- `segregatr` re-checks the `liability_map` it receives and raises with the
+  `pedigree_id` attached. A `ZeroPenetranceError` is never wrapped into a
+  `SegregaError` or turned into a `NaN` FLB; it propagates unchanged to the
+  caller.
+
+The check applies to any group without penetrance data, not only to sex: it
+fires whenever no genotype gives the observed affection a defined, non-zero
+probability. To compute an FLB for such a pedigree, supply penetrance data for
+the group (incidence and RR rows) or exclude the affected member's family.
+
 ---
 
 ## Allele Frequency
