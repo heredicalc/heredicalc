@@ -9,7 +9,7 @@ from importlib.resources import files as _files
 from pathlib import Path
 from typing import Any
 
-from heredicalc.core.exceptions import SegregaError
+from heredicalc.core.exceptions import SegregaError, ZeroPenetranceError
 from heredicalc.core.models.pedigree import Pedigree
 from heredicalc.core.models.penetrance import PenetranceTable
 from heredicalc.core.models.plugin import PluginMeta
@@ -56,12 +56,15 @@ class SegregatrFLBCalculator:
 
         :param liability_map: ``individual_id`` → zero-based liability class index.
         :raises SegregaError: If Rscript returns a non-zero exit code.
+        :raises ZeroPenetranceError: If an affected member's liability class has no
+            penetrance data; the FLB would be undefined (0/0).
         """
         table: PenetranceTable = penetrance_output
         ped_path: Path | None = None
         pen_path: Path | None = None
 
         try:
+            _check_affected_penetrance(pedigree, table, liability_map)
             ped_path = _write_pedigree_tsv(pedigree, liability_map)
             pen_path = _write_penetrance_tsv(table)
 
@@ -99,7 +102,7 @@ class SegregatrFLBCalculator:
             pen_path.unlink(missing_ok=True)
             return flb
 
-        except SegregaError:
+        except (SegregaError, ZeroPenetranceError):
             raise
         except Exception as exc:
             temp_files = [str(p) for p in [ped_path, pen_path] if p is not None]
@@ -107,6 +110,23 @@ class SegregatrFLBCalculator:
                 f"Unexpected error in segregatr FLB computation: {exc}",
                 temp_files=temp_files,
             ) from exc
+
+
+def _check_affected_penetrance(
+    pedigree: Pedigree, table: PenetranceTable, liability_map: dict[int, int]
+) -> None:
+    """Reject affected members in classes without penetrance data before calling R."""
+    for m in pedigree.members:
+        if not m.is_affected:
+            continue
+        row = table.rows[liability_map[m.individual_id]]
+        if not row.has_penetrance:
+            raise ZeroPenetranceError(
+                m.individual_id,
+                row.liability_group,
+                reason="segregatr would return an undefined (0/0) FLB",
+                pedigree_id=pedigree.pedigree_id,
+            )
 
 
 def _write_pedigree_tsv(pedigree: Pedigree, liability_map: dict[int, int]) -> Path:
