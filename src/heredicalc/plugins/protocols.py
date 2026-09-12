@@ -272,6 +272,8 @@ class FLBCalculator(Protocol):
             Hardy-Weinberg prior in segregatr.
         :return: FLB as float; values > 1 support pathogenicity.
         :raises SegregaError: If the external FLB computation fails.
+        :raises ZeroPenetranceError: If an affected member's liability class has
+            no penetrance data; must propagate rather than yield ``NaN``.
         """
         ...
 
