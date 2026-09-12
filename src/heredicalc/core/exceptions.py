@@ -63,3 +63,27 @@ class SegregaError(HerediCalcError):
         self.stderr = stderr
         self.temp_files = temp_files or []
         super().__init__(message)
+
+
+class ZeroPenetranceError(HerediCalcError):
+    """Raised when an affected member's liability class carries no penetrance data."""
+
+    def __init__(
+        self,
+        individual_id: int,
+        group: dict[str, str],
+        reason: str = "",
+        pedigree_id: str | None = None,
+    ) -> None:
+        self.individual_id = individual_id
+        self.group = dict(group)
+        self.reason = reason
+        self.pedigree_id = pedigree_id
+        where = f"member {individual_id}"
+        if pedigree_id is not None:
+            where += f" of pedigree {pedigree_id!r}"
+        fields = ", ".join(f"{k}={v!r}" for k, v in self.group.items())
+        msg = f"Affected {where} has no penetrance data for liability class {fields}"
+        if reason:
+            msg += f": {reason}"
+        super().__init__(msg)
