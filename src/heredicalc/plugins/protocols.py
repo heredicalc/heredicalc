@@ -244,6 +244,8 @@ class LiabilityAssigner(Protocol):
         For sex="U" members: returns the uninformative slot index; logs warning.
 
         :raises ValueError: If no matching row is found.
+        :raises ZeroPenetranceError: If the member is affected and the matched
+            row has no penetrance data.
         """
         ...
 

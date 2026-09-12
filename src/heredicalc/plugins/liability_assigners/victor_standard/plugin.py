@@ -5,8 +5,9 @@ from __future__ import annotations
 import logging
 from typing import Any
 
-from heredicalc.core.models.penetrance import PenetranceRow, PenetranceTable
+from heredicalc.core.exceptions import ZeroPenetranceError
 from heredicalc.core.models.pedigree import PedigreeMember
+from heredicalc.core.models.penetrance import PenetranceTable
 from heredicalc.core.models.plugin import PluginMeta
 
 logger = logging.getLogger(__name__)
@@ -51,42 +52,55 @@ class VictorStandardLiabilityAssigner:
         """Return the zero-based liability class index for *member*.
 
         :raises ValueError: If no matching penetrance row is found.
+        :raises ZeroPenetranceError: If *member* is affected and the matched row has
+            no penetrance data (all values zero or undefined).
         """
         table: PenetranceTable = penetrance_output
-
-        sex = member.sex
-        if sex == "U":
-            logger.warning(
-                "Member %s has unknown sex (sex='U') — assigning uninformative "
-                "liability slot. This may reduce FLB information.",
+        index = _match_index(member, table, phenotype_model)
+        row = table.rows[index]
+        if member.is_affected and not row.has_penetrance:
+            raise ZeroPenetranceError(
                 member.individual_id,
+                row.liability_group,
+                reason="all penetrance values for this class are zero or undefined",
             )
-            return _find_uninformative_index(table)
+        return index
 
-        if member.is_affected:
-            primary = member.primary_affection
-            if primary is None:
-                return _find_unaffected_index(table, sex, member.age_last_contact or 99)
 
-            raw_pheno = primary.phenotype
-            canonical = phenotype_model.map_raw_affection(raw_pheno)
+def _match_index(member: PedigreeMember, table: PenetranceTable, phenotype_model: Any) -> int:
+    sex = member.sex
+    if sex == "U":
+        logger.warning(
+            "Member %s has unknown sex (sex='U') — assigning uninformative "
+            "liability slot. This may reduce FLB information.",
+            member.individual_id,
+        )
+        return _find_uninformative_index(table)
 
-            if canonical is None:
-                logger.warning(
-                    "Member %s has affection %r not mapped to a canonical phenotype; "
-                    "treating as unaffected for liability assignment.",
-                    member.individual_id,
-                    raw_pheno,
-                )
-                return _find_unaffected_index(table, sex, member.age_last_contact or 99)
-
-            age = primary.age_at_diagnosis
-            if age is None:
-                age = member.age_last_contact or 0
-
-            return _find_affected_index(table, sex, canonical, age)
-        else:
+    if member.is_affected:
+        primary = member.primary_affection
+        if primary is None:
             return _find_unaffected_index(table, sex, member.age_last_contact or 99)
+
+        raw_pheno = primary.phenotype
+        canonical = phenotype_model.map_raw_affection(raw_pheno)
+
+        if canonical is None:
+            logger.warning(
+                "Member %s has affection %r not mapped to a canonical phenotype; "
+                "treating as unaffected for liability assignment.",
+                member.individual_id,
+                raw_pheno,
+            )
+            return _find_unaffected_index(table, sex, member.age_last_contact or 99)
+
+        age = primary.age_at_diagnosis
+        if age is None:
+            age = member.age_last_contact or 0
+
+        return _find_affected_index(table, sex, canonical, age)
+    else:
+        return _find_unaffected_index(table, sex, member.age_last_contact or 99)
 
 
 def _find_affected_index(
