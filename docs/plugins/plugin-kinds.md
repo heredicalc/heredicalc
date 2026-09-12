@@ -97,7 +97,7 @@ Computes the FLB value. Built-in: **segregatr** (R subprocess).
 
 | Method | Contract |
 |--------|---------|
-| `compute(pedigree, penetrance_output, liability_map, allele_freq, params)` | FLB float |
+| `compute(pedigree, penetrance_output, liability_map, allele_freq, params)` | FLB float; propagate `ZeroPenetranceError` instead of returning `NaN` |
 
 ---
 
