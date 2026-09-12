@@ -5,6 +5,29 @@ All notable changes to HerediCalc are documented here.
 This file is auto-generated from Conventional Commits via
 [git-cliff](https://github.com/orhun/git-cliff).
 
+## [4.3.0] — 2026-09-12
+
+### Breaking
+- Affected pedigree members without penetrance data now raise instead of silently
+  yielding `NaN`. When an affected member falls into a liability class whose
+  penetrance is zero or undefined for every genotype (typically a sex or other
+  subgroup for which the incidence source or RR model has no rows, e.g. males under a
+  female-only model), `victor_standard` and `segregatr` raise
+  `heredicalc.core.exceptions.ZeroPenetranceError`. The exception carries the
+  member's `individual_id`, the `group` without data (sex, phenotype, age band), a
+  `reason`, and, from `segregatr`, the `pedigree_id`. Callers that relied on
+  receiving a `NaN` FLB for such pedigrees must now handle the exception (it is a
+  `HerediCalcError`). Unaffected members in such classes are assigned exactly as
+  before.
+
+### Fixed
+- `segregatr` no longer wraps a `ZeroPenetranceError` into a generic `SegregaError`;
+  it is re-raised unchanged so callers can handle it specifically.
+
+### Added
+- `PenetranceRow.has_penetrance` and `PenetranceRow.liability_group` helpers, shared
+  by the two guards.
+
 ## [4.2.0] - 2026-06-17
 
 ### Added
