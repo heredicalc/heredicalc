@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
@@ -31,7 +31,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -1668,8 +1668,8 @@ and empirically confirmed for CI5-IX/X (male-dominant, peak incidence age 70–7
 <h2 id="compatibility-enforcement">Compatibility Enforcement<a class="headerlink" href="#compatibility-enforcement" title="Permanent link">&para;</a></h2>
 <p>Each mapper declares <code>compatible_with</code> in its metadata:</p>
 <div class="highlight"><pre><span></span><code><span class="n">compatible_with</span><span class="o">=</span><span class="p">{</span>
-    <span class="s2">&quot;incidence_source&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;ci5_ix&quot;</span><span class="p">],</span>
-    <span class="s2">&quot;phenotype_model&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;hbopc&quot;</span><span class="p">],</span>
+    <span class="s2">"incidence_source"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"ci5_ix"</span><span class="p">],</span>
+    <span class="s2">"phenotype_model"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"hbopc"</span><span class="p">],</span>
 <span class="p">}</span>
 </code></pre></div>
 <p>The registry raises a <code>PluginCompatibilityError</code> at startup if the configured
@@ -1734,31 +1734,31 @@ plugin directory — no existing code needs to be modified.</p>
 <p><strong>2. Write <code>plugin.py</code></strong> (copy from an existing mapper, update name and <code>compatible_with</code>):</p>
 <div class="highlight"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">CI5XIIIHBOPCTraitMapper</span><span class="p">:</span>
     <span class="n">meta</span> <span class="o">=</span> <span class="n">PluginMeta</span><span class="p">(</span>
-        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;ci5_xiii_hbopc&quot;</span><span class="p">,</span>
-        <span class="n">version</span><span class="o">=</span><span class="s2">&quot;1.0.0&quot;</span><span class="p">,</span>
-        <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;trait_mapper&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Maps CI5-XIII trait codes to HBOPC canonical phenotypes&quot;</span><span class="p">,</span>
-        <span class="n">author</span><span class="o">=</span><span class="s2">&quot;HerediCalc&quot;</span><span class="p">,</span>
-        <span class="n">min_api_version</span><span class="o">=</span><span class="s2">&quot;1.0.0&quot;</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">"ci5_xiii_hbopc"</span><span class="p">,</span>
+        <span class="n">version</span><span class="o">=</span><span class="s2">"1.0.0"</span><span class="p">,</span>
+        <span class="n">kind</span><span class="o">=</span><span class="s2">"trait_mapper"</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Maps CI5-XIII trait codes to HBOPC canonical phenotypes"</span><span class="p">,</span>
+        <span class="n">author</span><span class="o">=</span><span class="s2">"HerediCalc"</span><span class="p">,</span>
+        <span class="n">min_api_version</span><span class="o">=</span><span class="s2">"1.0.0"</span><span class="p">,</span>
         <span class="n">compatible_with</span><span class="o">=</span><span class="p">{</span>
-            <span class="s2">&quot;incidence_source&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;ci5_xiii&quot;</span><span class="p">],</span>
-            <span class="s2">&quot;phenotype_model&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;hbopc&quot;</span><span class="p">],</span>
+            <span class="s2">"incidence_source"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"ci5_xiii"</span><span class="p">],</span>
+            <span class="s2">"phenotype_model"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"hbopc"</span><span class="p">],</span>
         <span class="p">},</span>
     <span class="p">)</span>
     <span class="c1"># ... (identical __init__, map_trait, map_affection implementation)</span>
 </code></pre></div>
 <p><strong>3. Write <code>data/mappings.yml</code></strong> with the correct CI5-XIII codes:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">trait_mappings</span><span class="p">:</span>
-<span class="w">  </span><span class="s">&quot;&lt;breast_code&gt;&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;BreastCancer&quot;</span>
-<span class="w">  </span><span class="s">&quot;&lt;ovarian_code&gt;&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;OvarianCancer&quot;</span>
-<span class="w">  </span><span class="s">&quot;&lt;pancreatic_code&gt;&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;PancreaticCancer&quot;</span>
+<span class="w">  </span><span class="s">"&lt;breast_code&gt;"</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">"BreastCancer"</span>
+<span class="w">  </span><span class="s">"&lt;ovarian_code&gt;"</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">"OvarianCancer"</span>
+<span class="w">  </span><span class="s">"&lt;pancreatic_code&gt;"</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">"PancreaticCancer"</span>
 
 <span class="nt">affection_mappings</span><span class="p">:</span>
-<span class="w">  </span><span class="s">&quot;BrCa&quot;</span><span class="p p-Indicator">:</span><span class="w">  </span><span class="s">&quot;BreastCancer&quot;</span>
-<span class="w">  </span><span class="s">&quot;OvCa&quot;</span><span class="p p-Indicator">:</span><span class="w">  </span><span class="s">&quot;OvarianCancer&quot;</span>
-<span class="w">  </span><span class="s">&quot;PanCa&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;PancreaticCancer&quot;</span>
-<span class="w">  </span><span class="s">&quot;unaff&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
-<span class="w">  </span><span class="s">&quot;.&quot;</span><span class="p p-Indicator">:</span><span class="w">     </span><span class="l l-Scalar l-Scalar-Plain">null</span>
+<span class="w">  </span><span class="s">"BrCa"</span><span class="p p-Indicator">:</span><span class="w">  </span><span class="s">"BreastCancer"</span>
+<span class="w">  </span><span class="s">"OvCa"</span><span class="p p-Indicator">:</span><span class="w">  </span><span class="s">"OvarianCancer"</span>
+<span class="w">  </span><span class="s">"PanCa"</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">"PancreaticCancer"</span>
+<span class="w">  </span><span class="s">"unaff"</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
+<span class="w">  </span><span class="s">"."</span><span class="p p-Indicator">:</span><span class="w">     </span><span class="l l-Scalar l-Scalar-Plain">null</span>
 </code></pre></div>
 <p><strong>4. Register in <code>src/heredicalc/plugins/__init__.py</code>:</strong></p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">heredicalc.plugins.trait_mappers.ci5_xiii_hbopc.plugin</span><span class="w"> </span><span class="kn">import</span> <span class="n">CI5XIIIHBOPCTraitMapper</span>
@@ -1816,7 +1816,7 @@ plugin directory — no existing code needs to be modified.</p>
       <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "toc.integrate", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
       
         <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
       

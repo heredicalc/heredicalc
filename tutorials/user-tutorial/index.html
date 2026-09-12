@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
@@ -31,7 +31,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -1501,8 +1501,8 @@ that is not included as a built-in. The running example is <strong>BRCA2</strong
   <div class="highlight"><pre><span></span><code>heredicalc<span class="w"> </span>--version
 </code></pre></div></li>
 <li>R ≥ 4.2 with the <code>segregatr</code> and <code>kinship2</code> packages:
-  <div class="highlight"><pre><span></span><code><span class="nf">install.packages</span><span class="p">(</span><span class="s">&quot;kinship2&quot;</span><span class="p">)</span>
-<span class="nf">install.packages</span><span class="p">(</span><span class="s">&quot;segregatr&quot;</span><span class="p">)</span>
+  <div class="highlight"><pre><span></span><code><span class="nf">install.packages</span><span class="p">(</span><span class="s">"kinship2"</span><span class="p">)</span>
+<span class="nf">install.packages</span><span class="p">(</span><span class="s">"segregatr"</span><span class="p">)</span>
 </code></pre></div></li>
 <li>A pedigree file in COOL3-TSV format</li>
 </ul>
@@ -1612,13 +1612,13 @@ BRCA2,M,80,,ProstateCancer,1.0,1.0
 <div class="highlight"><pre><span></span><code>heredicalc<span class="w"> </span>add<span class="w"> </span>trait<span class="w"> </span>BRCA2<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--crhf<span class="w"> </span><span class="m">0</span>.0013<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--kind<span class="w"> </span>gene<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--meta<span class="w"> </span><span class="s2">&quot;locus=13q12.3&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--meta<span class="w"> </span><span class="s2">&quot;omim_nr=600185&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--meta<span class="w"> </span><span class="s2">"locus=13q12.3"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--meta<span class="w"> </span><span class="s2">"omim_nr=600185"</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--rr-file<span class="w"> </span>BRCA2_rr.csv
 </code></pre></div>
 <p>On success:</p>
 <div class="highlight"><pre><span></span><code>✓ RR table imported from BRCA2_rr.csv
-✓ Trait &#39;BRCA2&#39; added (CRHF=0.0013, kind=gene).
+✓ Trait 'BRCA2' added (CRHF=0.0013, kind=gene).
 </code></pre></div>
 <p>Data is stored locally at:</p>
 <ul>
@@ -1669,7 +1669,7 @@ Result:</p>
 <span class="w">  </span><span class="nt">phenotype_model</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">hbopc_prca</span>
 <span class="w">  </span><span class="nt">trait_mapper</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ci5_ix_hbopc_prca</span>
 <span class="w">  </span><span class="nt">params</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">population</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Latvia&quot;</span>
+<span class="w">    </span><span class="nt">population</span><span class="p">:</span><span class="w"> </span><span class="s">"Latvia"</span>
 <span class="w">    </span><span class="nt">age_bands</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">30</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">40</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">50</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">60</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">65</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">70</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">80</span><span class="p p-Indicator">]</span>
 </code></pre></div>
 <div class="admonition note">
@@ -1688,7 +1688,7 @@ Result:</p>
 </code></pre></div>
 <p>For machine-readable JSON output:</p>
 <div class="highlight"><pre><span></span><code>heredicalc<span class="w"> </span>run<span class="w"> </span>pedigree.ped<span class="w"> </span>--config<span class="w"> </span>brca2_latvia.yml<span class="w"> </span>--format<span class="w"> </span>json
-<span class="c1"># {&quot;pedigree&quot;: &quot;pedigree.ped&quot;, &quot;flb&quot;: 12.345}</span>
+<span class="c1"># {"pedigree": "pedigree.ped", "flb": 12.345}</span>
 </code></pre></div>
 <p>Multiple pedigrees at once:</p>
 <div class="highlight"><pre><span></span><code>heredicalc<span class="w"> </span>batch<span class="w"> </span>./pedigrees/<span class="w"> </span>--config<span class="w"> </span>brca2_latvia.yml
@@ -1729,7 +1729,7 @@ Result:</p>
 <hr />
 <h2 id="managing-traits">Managing Traits<a class="headerlink" href="#managing-traits" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><span class="c1"># Overview of all user-defined traits</span>
-cat<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>python<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;import platformdirs; print(platformdirs.user_data_dir(&quot;heredicalc&quot;))&#39;</span><span class="k">)</span><span class="s2">/traits/traits.yaml&quot;</span>
+cat<span class="w"> </span><span class="s2">"</span><span class="k">$(</span>python<span class="w"> </span>-c<span class="w"> </span><span class="s1">'import platformdirs; print(platformdirs.user_data_dir("heredicalc"))'</span><span class="k">)</span><span class="s2">/traits/traits.yaml"</span>
 
 <span class="c1"># Replace RR values retroactively</span>
 heredicalc<span class="w"> </span>edit<span class="w"> </span>trait<span class="w"> </span>BRCA2<span class="w"> </span>--rr-file<span class="w"> </span>updated_brca2.csv
@@ -1792,7 +1792,7 @@ heredicalc<span class="w"> </span>remove<span class="w"> </span>trait<span class
       <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "toc.integrate", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
       
         <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
       

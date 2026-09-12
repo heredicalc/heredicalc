@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
@@ -31,7 +31,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -1466,8 +1466,8 @@
 <h1 id="cli-reference">CLI Reference<a class="headerlink" href="#cli-reference" title="Permanent link">&para;</a></h1>
 <h2 id="r-dependency-setup">R Dependency Setup<a class="headerlink" href="#r-dependency-setup" title="Permanent link">&para;</a></h2>
 <p>HerediCalc requires R ≥ 4.2 with the <code>segregatr</code> and <code>kinship2</code> packages.</p>
-<div class="highlight"><pre><span></span><code><span class="nf">install.packages</span><span class="p">(</span><span class="s">&quot;kinship2&quot;</span><span class="p">)</span>
-<span class="nf">install.packages</span><span class="p">(</span><span class="s">&quot;segregatr&quot;</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="nf">install.packages</span><span class="p">(</span><span class="s">"kinship2"</span><span class="p">)</span>
+<span class="nf">install.packages</span><span class="p">(</span><span class="s">"segregatr"</span><span class="p">)</span>
 </code></pre></div>
 <hr />
 <h2 id="heredicalc-run"><code>heredicalc run</code><a class="headerlink" href="#heredicalc-run" title="Permanent link">&para;</a></h2>
@@ -1552,13 +1552,13 @@ config-file values; required values not present in either will raise an error.</
 heredicalc<span class="w"> </span>run<span class="w"> </span>pedigree.ped<span class="w"> </span>--config<span class="w"> </span>heredicalc.yml
 
 <span class="c1"># Override population at the command line</span>
-heredicalc<span class="w"> </span>run<span class="w"> </span>pedigree.ped<span class="w"> </span>--config<span class="w"> </span>heredicalc.yml<span class="w"> </span>--population<span class="w"> </span><span class="s2">&quot;Finland, Tampere&quot;</span>
+heredicalc<span class="w"> </span>run<span class="w"> </span>pedigree.ped<span class="w"> </span>--config<span class="w"> </span>heredicalc.yml<span class="w"> </span>--population<span class="w"> </span><span class="s2">"Finland, Tampere"</span>
 
 <span class="c1"># Fully explicit — no config file needed</span>
 heredicalc<span class="w"> </span>run<span class="w"> </span>pedigree.ped<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--genetic-entity<span class="w"> </span>BRCA1<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--allele-freq<span class="w"> </span><span class="m">0</span>.0001<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--population<span class="w"> </span><span class="s2">&quot;Latvia&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--population<span class="w"> </span><span class="s2">"Latvia"</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--incidence-source<span class="w"> </span>ci5_ix<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--phenotype-model<span class="w"> </span>hbopc<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--trait-mapper<span class="w"> </span>ci5_ix_hbopc<span class="w"> </span><span class="se">\</span>
@@ -1568,7 +1568,7 @@ heredicalc<span class="w"> </span>run<span class="w"> </span>pedigree.ped<span c
 heredicalc<span class="w"> </span>run<span class="w"> </span>pedigree.ped<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--genetic-entity<span class="w"> </span>BRCA1<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--allele-freq<span class="w"> </span><span class="m">0</span>.0001<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--population<span class="w"> </span><span class="s2">&quot;Latvia&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--population<span class="w"> </span><span class="s2">"Latvia"</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--incidence-source<span class="w"> </span>ci5_ix<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--phenotype-model<span class="w"> </span>hbopc<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--trait-mapper<span class="w"> </span>ci5_ix_hbopc<span class="w"> </span><span class="se">\</span>
@@ -1626,7 +1626,7 @@ heredicalc<span class="w"> </span>batch<span class="w"> </span>./pedigrees/<span
 heredicalc<span class="w"> </span>batch<span class="w"> </span>./pedigrees/<span class="w"> </span>--config<span class="w"> </span>heredicalc.yml<span class="w"> </span>--workers<span class="w"> </span><span class="m">2</span><span class="w"> </span>--format<span class="w"> </span>text
 
 <span class="c1"># Custom file pattern</span>
-heredicalc<span class="w"> </span>batch<span class="w"> </span>./pedigrees/<span class="w"> </span>--config<span class="w"> </span>heredicalc.yml<span class="w"> </span>--pattern<span class="w"> </span><span class="s2">&quot;Belman*.ped&quot;</span>
+heredicalc<span class="w"> </span>batch<span class="w"> </span>./pedigrees/<span class="w"> </span>--config<span class="w"> </span>heredicalc.yml<span class="w"> </span>--pattern<span class="w"> </span><span class="s2">"Belman*.ped"</span>
 </code></pre></div>
 <p>JSON output is an array of objects: <code>{"pedigree": "name.ped", "flb": 19.47, "error": null}</code>.
 Failed pedigrees are included with <code>flb: null</code> and the error message.</p>
@@ -1730,7 +1730,7 @@ heredicalc<span class="w"> </span>add<span class="w"> </span>trait<span class="w
 
 <span class="c1"># Step 2: fill in template, then import</span>
 heredicalc<span class="w"> </span>add<span class="w"> </span>trait<span class="w"> </span>BRCA2<span class="w"> </span>--crhf<span class="w"> </span><span class="m">0</span>.0013<span class="w"> </span>--rr-file<span class="w"> </span>BRCA2_rr.csv<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--meta<span class="w"> </span><span class="s2">&quot;locus=13q12.3&quot;</span><span class="w"> </span>--meta<span class="w"> </span><span class="s2">&quot;omim_nr=600185&quot;</span>
+<span class="w">  </span>--meta<span class="w"> </span><span class="s2">"locus=13q12.3"</span><span class="w"> </span>--meta<span class="w"> </span><span class="s2">"omim_nr=600185"</span>
 </code></pre></div>
 <hr />
 <h2 id="heredicalc-clone-trait"><code>heredicalc clone trait</code><a class="headerlink" href="#heredicalc-clone-trait" title="Permanent link">&para;</a></h2>
@@ -1926,7 +1926,7 @@ heredicalc<span class="w"> </span>plugins<span class="w"> </span>list<span class
       <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "toc.integrate", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
       
         <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
       

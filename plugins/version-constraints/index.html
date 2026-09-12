@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
@@ -31,7 +31,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -1442,10 +1442,10 @@ the core and third-party plugins.</p>
 </tbody>
 </table>
 <div class="highlight"><pre><span></span><code><span class="n">meta</span> <span class="o">=</span> <span class="n">PluginMeta</span><span class="p">(</span>
-    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;my_plugin&quot;</span><span class="p">,</span>
-    <span class="n">version</span><span class="o">=</span><span class="s2">&quot;1.2.0&quot;</span><span class="p">,</span>
-    <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;trait_mapper&quot;</span><span class="p">,</span>
-    <span class="n">min_api_version</span><span class="o">=</span><span class="s2">&quot;1.0.0&quot;</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">"my_plugin"</span><span class="p">,</span>
+    <span class="n">version</span><span class="o">=</span><span class="s2">"1.2.0"</span><span class="p">,</span>
+    <span class="n">kind</span><span class="o">=</span><span class="s2">"trait_mapper"</span><span class="p">,</span>
+    <span class="n">min_api_version</span><span class="o">=</span><span class="s2">"1.0.0"</span><span class="p">,</span>
     <span class="n">max_api_version</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>   <span class="c1"># works with any future API version</span>
     <span class="o">...</span>
 <span class="p">)</span>
@@ -1466,8 +1466,8 @@ and <code>max_api_version</code> against the running HerediCalc API version
 <p>The <code>compatible_with</code> field records which specific plugin names this plugin
 works with. It is checked when the pipeline is assembled, not at load time:</p>
 <div class="highlight"><pre><span></span><code><span class="n">compatible_with</span><span class="o">=</span><span class="p">{</span>
-    <span class="s2">&quot;incidence_source&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;ci5_viii&quot;</span><span class="p">,</span> <span class="s2">&quot;ci5_ix&quot;</span><span class="p">,</span> <span class="s2">&quot;ci5_x&quot;</span><span class="p">,</span> <span class="s2">&quot;ci5_xi&quot;</span><span class="p">,</span> <span class="s2">&quot;ci5_xii&quot;</span><span class="p">],</span>
-    <span class="s2">&quot;phenotype_model&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;hbopc&quot;</span><span class="p">],</span>
+    <span class="s2">"incidence_source"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"ci5_viii"</span><span class="p">,</span> <span class="s2">"ci5_ix"</span><span class="p">,</span> <span class="s2">"ci5_x"</span><span class="p">,</span> <span class="s2">"ci5_xi"</span><span class="p">,</span> <span class="s2">"ci5_xii"</span><span class="p">],</span>
+    <span class="s2">"phenotype_model"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"hbopc"</span><span class="p">],</span>
 <span class="p">}</span>
 </code></pre></div>
 <p>A <code>PluginCompatibilityError</code> is raised at pipeline startup if the active
@@ -1544,7 +1544,7 @@ with a constraint string:</p>
       <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "toc.integrate", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
       
         <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
       

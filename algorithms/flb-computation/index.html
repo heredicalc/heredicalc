@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
@@ -31,7 +31,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -975,6 +975,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Liability Classes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#affected-members-without-penetrance-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Affected Members Without Penetrance Data
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1579,6 +1596,30 @@ On error, temp files are preserved for diagnostics.</p>
 </ul>
 <p>The <code>victor_standard</code> assigner implements this matching. The zero-based index
 is passed to <code>segregatr</code> as the <code>liability_class</code> column.</p>
+<h3 id="affected-members-without-penetrance-data">Affected Members Without Penetrance Data<a class="headerlink" href="#affected-members-without-penetrance-data" title="Permanent link">&para;</a></h3>
+<p>A penetrance model can legitimately have no data for a subgroup. For example,
+when the incidence source and RR model only cover women, VICTOR emits male rows
+whose penetrance is zero for every genotype. Unaffected members of such a group
+are assigned as usual: a zero probability of being affected makes them
+uninformative, and the FLB is unaffected. An <strong>affected</strong> member of such a
+group, however, has probability zero under every genotype, so the likelihood
+is zero under both hypotheses and <code>segregatr</code> would return <code>0/0 = NaN</code>.</p>
+<p>HerediCalc raises <code>heredicalc.core.exceptions.ZeroPenetranceError</code> instead of
+returning <code>NaN</code>. The exception carries the member's <code>individual_id</code>, the
+<code>group</code> that lacks data (sex, phenotype, age band), a <code>reason</code>, and, where
+known, the <code>pedigree_id</code>:</p>
+<ul>
+<li><code>victor_standard</code> raises when an affected member is matched to a row whose
+  penetrance values are all zero or undefined (<code>NaN</code>).</li>
+<li><code>segregatr</code> re-checks the <code>liability_map</code> it receives and raises with the
+  <code>pedigree_id</code> attached. A <code>ZeroPenetranceError</code> is never wrapped into a
+  <code>SegregaError</code> or turned into a <code>NaN</code> FLB; it propagates unchanged to the
+  caller.</li>
+</ul>
+<p>The check applies to any group without penetrance data, not only to sex: it
+fires whenever no genotype gives the observed affection a defined, non-zero
+probability. To compute an FLB for such a pedigree, supply penetrance data for
+the group (incidence and RR rows) or exclude the affected member's family.</p>
 <hr />
 <h2 id="allele-frequency">Allele Frequency<a class="headerlink" href="#allele-frequency" title="Permanent link">&para;</a></h2>
 <p>The allele frequency <code>q</code> (CRHF — cumulative risk haplotype frequency) enters
@@ -1679,7 +1720,7 @@ multi-factorial likelihood model.</p>
       <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "toc.integrate", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
       
         <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
       

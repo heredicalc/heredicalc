@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
@@ -31,7 +31,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -1478,7 +1478,7 @@
 <span class="w">  </span><span class="nt">pedigree_format</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cool3_tsv</span><span class="w">   </span><span class="c1"># optional — auto-detected if omitted</span>
 
 <span class="w">  </span><span class="nt">params</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">population</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Latvia&quot;</span><span class="w">        </span><span class="c1"># required — population name or CI5 registry ID</span>
+<span class="w">    </span><span class="nt">population</span><span class="p">:</span><span class="w"> </span><span class="s">"Latvia"</span><span class="w">        </span><span class="c1"># required — population name or CI5 registry ID</span>
 <span class="w">    </span><span class="nt">age_bands</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">30</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">40</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">50</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">60</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">65</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">70</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">80</span><span class="p p-Indicator">]</span><span class="w">   </span><span class="c1"># optional — default shown</span>
 <span class="w">    </span><span class="nt">rr_model</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tabular</span><span class="w">           </span><span class="c1"># optional</span>
 <span class="w">    </span><span class="nt">crhf_model</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">lookup</span><span class="w">          </span><span class="c1"># optional</span>
@@ -1616,7 +1616,7 @@
 <span class="w">  </span><span class="nt">phenotype_model</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">hbopc</span>
 <span class="w">  </span><span class="nt">trait_mapper</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ci5_ix_hbopc</span>
 <span class="w">  </span><span class="nt">params</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">population</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Latvia&quot;</span>
+<span class="w">    </span><span class="nt">population</span><span class="p">:</span><span class="w"> </span><span class="s">"Latvia"</span>
 </code></pre></div>
 <hr />
 <h2 id="cool3-compatible-mode">COOL3-Compatible Mode<a class="headerlink" href="#cool3-compatible-mode" title="Permanent link">&para;</a></h2>
@@ -1628,7 +1628,7 @@
 <span class="w">  </span><span class="nt">hazard_model</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">annual_rate_cool3</span>
 <span class="w">  </span><span class="nt">penetrance_model</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">victor_cool3</span>
 <span class="w">  </span><span class="nt">params</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">population</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Latvia&quot;</span>
+<span class="w">    </span><span class="nt">population</span><span class="p">:</span><span class="w"> </span><span class="s">"Latvia"</span>
 </code></pre></div>
 <p>When <code>penetrance_model: victor_cool3</code> is set without an explicit <code>hazard_model</code>,
 HerediCalc automatically selects <code>annual_rate_cool3</code> (plugin-specific default).
@@ -1637,7 +1637,7 @@ Specifying <code>hazard_model</code> explicitly always takes precedence.</p>
 <h2 id="cli-overrides">CLI Overrides<a class="headerlink" href="#cli-overrides" title="Permanent link">&para;</a></h2>
 <p>Any <code>plugins</code> or <code>computation</code> field can be overridden at the command line.
 CLI values always take precedence over the config file:</p>
-<div class="highlight"><pre><span></span><code>heredicalc<span class="w"> </span>run<span class="w"> </span>pedigree.ped<span class="w"> </span>--config<span class="w"> </span>heredicalc.yml<span class="w"> </span>--population<span class="w"> </span><span class="s2">&quot;Finland, Tampere&quot;</span>
+<div class="highlight"><pre><span></span><code>heredicalc<span class="w"> </span>run<span class="w"> </span>pedigree.ped<span class="w"> </span>--config<span class="w"> </span>heredicalc.yml<span class="w"> </span>--population<span class="w"> </span><span class="s2">"Finland, Tampere"</span>
 </code></pre></div>
 <hr />
 <h2 id="trait-mapper-incidence-source-pairing">Trait Mapper ↔ Incidence Source Pairing<a class="headerlink" href="#trait-mapper-incidence-source-pairing" title="Permanent link">&para;</a></h2>
@@ -1733,7 +1733,7 @@ associated with ProstateCancer, e.g. BRCA2 or HOXB13.</p>
       <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "toc.integrate", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
       
         <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
       
