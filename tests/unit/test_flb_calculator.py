@@ -179,3 +179,49 @@ def test_untracked_affection_in_zero_penetrance_class_does_not_raise(monkeypatch
     )
     assert flb == 1.0
     assert {r["individual_id"]: r["is_affected"] for r in rows}["3"] == "0"
+
+
+def test_composite_class_member_is_passed_as_affected(monkeypatch) -> None:
+    """A member in a composite (one-of-several) class is affected for the R hand-off, and the
+    composite row appended by the assigner reaches R through the penetrance TSV."""
+    from heredicalc.plugins.liability_assigners.victor_standard.plugin import (
+        VictorStandardLiabilityAssigner,
+    )
+
+    class _Model:
+        def canonical_phenotypes(self) -> list[str]:
+            return [_PHENO, "OvarianCancer"]
+
+        def map_raw_affection(self, raw: str) -> list[str] | None:
+            return [_PHENO, "OvarianCancer"] if raw == "BC_any" else None
+
+    table = _table()
+    table.rows.append(_row("F", "OvarianCancer", 0.02, 0.04, 0.04))
+    pedigree = _pedigree(son_affected=False)
+    pedigree.members[1].affections = [Affection(phenotype="BC_any", age_at_diagnosis=45)]
+    assigner = VictorStandardLiabilityAssigner()
+    liability_map = {
+        m.individual_id: assigner.assign(m, table, _Model(), {}) for m in pedigree.members
+    }
+    assert liability_map[2] == 5 and table.rows[5].is_affected
+
+    ped_rows: list[dict[str, str]] = []
+    pen_rows: list[str] = []
+
+    def _fake_run(cmd, **kwargs):
+        with open(cmd[3], encoding="utf-8") as fh:
+            header = fh.readline().rstrip("\n").split("\t")
+            ped_rows.extend(
+                dict(zip(header, line.rstrip("\n").split("\t"), strict=True)) for line in fh
+            )
+        with open(cmd[4], encoding="utf-8") as fh:
+            pen_rows.extend(line.rstrip("\n") for line in fh)
+        return subprocess.CompletedProcess(cmd, 0, stdout='{"flb": 1.0}\n', stderr="")
+
+    monkeypatch.setattr(subprocess, "run", _fake_run)
+    SegregatrFLBCalculator().compute(pedigree, table, liability_map, 0.001, {})
+    by_id = {r["individual_id"]: r for r in ped_rows}
+    assert by_id["2"]["is_affected"] == "1" and by_id["2"]["liability_class"] == "5"
+    assert len(pen_rows) == 1 + 6
+    composite = [float(v) for v in pen_rows[6].split("\t")]
+    assert composite == pytest.approx([0.05 + 0.02, 0.30 + 0.04, 0.30 + 0.04])
