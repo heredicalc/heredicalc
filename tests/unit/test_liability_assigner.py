@@ -118,3 +118,127 @@ def test_female_only_victor_model_raises_only_for_affected_males() -> None:
 
     index = assigner.assign(_affected(2, "F", 45), table, pheno_model, params)
     assert table.rows[index].has_penetrance
+
+
+# --- composite classes: an affection that is one of several tracked phenotypes -------------
+
+_OTHER = "OvarianCancer"
+
+
+class _MultiPhenotypeModel:
+    """Tracks two phenotypes; ``BC_any`` means "one of them, subtype unknown"."""
+
+    def canonical_phenotypes(self) -> list[str]:
+        return [_PHENO, _OTHER]
+
+    def map_raw_affection(self, raw: str) -> str | list[str] | None:
+        return {
+            ".": None,
+            "unaff": None,
+            "BrCa": _PHENO,
+            "OvCa": _OTHER,
+            "BC_any": [_PHENO, _OTHER],
+            "BC_single_list": [_PHENO],
+            "BC_dup_list": [_PHENO, _PHENO],
+        }[raw]
+
+
+def _two_phenotype_table() -> PenetranceTable:
+    rows = [
+        _row("F", _PHENO, 0, 49, 0.010, 0.050, 0.060),
+        _row("F", _OTHER, 0, 49, 0.002, 0.004, 0.005),
+        _row("F", "unaffected", 0, 49, 0.020, 0.100, 0.110),
+        _row("F", _PHENO, 50, 99, 0.030, 0.120, 0.130),
+        _row("F", _OTHER, 50, 99, 0.008, 0.016, 0.017),
+        _row("F", "unaffected", 50, 99, 0.080, 0.300, 0.310),
+        _row("M", _PHENO, 0, 49, 0.001, 0.002, 0.002),
+        _row("M", _OTHER, 0, 49, 0.0, 0.0, 0.0),
+        _row("M", "unaffected", 0, 49, 0.003, 0.004, 0.004),
+        _row("M", _PHENO, 50, 99, 0.0, 0.0, 0.0),
+        _row("M", _OTHER, 50, 99, 0.0, 0.0, 0.0),
+        _row("M", "unaffected", 50, 99, 0.0, 0.0, 0.0),
+    ]
+    return PenetranceTable(genetic_entity="TESTGENE", population="test", rows=rows)
+
+
+def _member(individual_id: int, sex: str, age: int, raw: str | None) -> PedigreeMember:
+    affections = [] if raw is None else [Affection(phenotype=raw, age_at_diagnosis=age)]
+    known = raw != "."
+    return PedigreeMember(
+        individual_id=individual_id,
+        sex=sex,
+        age_last_contact=age,
+        affections=affections,
+        affection_known=known,
+    )
+
+
+def _assign_multi(member: PedigreeMember, table: PenetranceTable) -> int:
+    return VictorStandardLiabilityAssigner().assign(member, table, _MultiPhenotypeModel(), {})
+
+
+@pytest.mark.parametrize(
+    ("sex", "age", "band"), [("F", 30, (0, 49)), ("F", 60, (50, 99)), ("M", 30, (0, 49))]
+)
+def test_composite_row_is_the_column_wise_sum(sex: str, age: int, band: tuple[int, int]) -> None:
+    table = _two_phenotype_table()
+    n_before = len(table.rows)
+    idx = _assign_multi(_member(1, sex, age, "BC_any"), table)
+    row = table.rows[idx]
+    parts = [
+        r
+        for r in table.rows[:n_before]
+        if r.sex == sex and r.phenotype in (_PHENO, _OTHER) and (r.age_start, r.age_end) == band
+    ]
+    assert len(parts) == 2
+    assert row.penetrance_nc == pytest.approx(sum(r.penetrance_nc for r in parts))
+    assert row.penetrance_het == pytest.approx(sum(r.penetrance_het for r in parts))
+    assert row.penetrance_hom == pytest.approx(sum(r.penetrance_hom for r in parts))
+    assert (row.sex, row.age_start, row.age_end) == (sex, *band)
+    assert row.phenotype == f"{_PHENO}|{_OTHER}"
+
+
+def test_composite_row_is_an_affected_class_appended_to_the_table() -> None:
+    table = _two_phenotype_table()
+    n_before = len(table.rows)
+    idx = _assign_multi(_member(1, "F", 30, "BC_any"), table)
+    assert idx == n_before and len(table.rows) == n_before + 1
+    assert table.rows[idx].is_affected is True
+    assert table.rows[idx].has_penetrance
+    # a second member with the same sex and band reuses the class instead of appending
+    assert _assign_multi(_member(2, "F", 45, "BC_any"), table) == idx
+    assert len(table.rows) == n_before + 1
+    # a different band gets its own composite class
+    idx2 = _assign_multi(_member(3, "F", 70, "BC_any"), table)
+    assert idx2 == n_before + 1 and table.rows[idx2].age_start == 50
+
+
+def test_single_phenotype_is_unchanged_by_the_composite_path() -> None:
+    table = _two_phenotype_table()
+    plain = _assign_multi(_member(1, "F", 30, "BrCa"), table)
+    assert table.rows[plain].phenotype == _PHENO and plain < 12
+    assert _assign_multi(_member(2, "F", 30, "BC_single_list"), table) == plain
+    assert _assign_multi(_member(3, "F", 30, "BC_dup_list"), table) == plain
+    assert len(table.rows) == 12  # nothing appended
+
+
+def test_unknown_affection_stays_on_the_unaffected_path() -> None:
+    table = _two_phenotype_table()
+    idx = _assign_multi(_member(1, "F", 30, "."), table)
+    assert table.rows[idx].phenotype == "unaffected" and not table.rows[idx].is_affected
+    assert _assign_multi(_member(2, "F", 30, "unaff"), table) == idx
+    assert len(table.rows) == 12
+
+
+def test_composite_without_penetrance_raises_like_a_single_class() -> None:
+    table = _two_phenotype_table()
+    with pytest.raises(ZeroPenetranceError) as info:
+        _assign_multi(_member(1, "M", 60, "BC_any"), table)  # both male rows 50-99 are zero
+    assert info.value.group["phenotype"] == f"{_PHENO}|{_OTHER}"
+
+
+def test_composite_candidate_without_row_raises_value_error() -> None:
+    table = _two_phenotype_table()
+    table.rows = [r for r in table.rows if r.phenotype != _OTHER]
+    with pytest.raises(ValueError, match="No penetrance row"):
+        _assign_multi(_member(1, "F", 30, "BC_any"), table)

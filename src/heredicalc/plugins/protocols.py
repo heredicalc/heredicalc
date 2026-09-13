@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from collections.abc import Sequence
 from pathlib import Path
 from typing import Any, Literal, Protocol, runtime_checkable
 
@@ -50,11 +51,15 @@ class PhenotypeModel(Protocol):
         """
         ...
 
-    def map_raw_affection(self, raw: str) -> str | None:
-        """Map a raw affection code from a pedigree file to a canonical phenotype.
+    def map_raw_affection(self, raw: str) -> str | Sequence[str] | None:
+        """Map a raw affection code from a pedigree file to canonical phenotype(s).
 
         :param raw: Raw code as stored in the pedigree file, e.g. ``"BrCa"``.
-        :return: Canonical phenotype name, or ``None`` if unaffected / not tracked.
+        :return: Canonical phenotype name; ``None`` if unaffected / not tracked; or a
+            sequence of several tracked phenotypes when the member is known to have
+            exactly one of them but the subtype is unknown (e.g. breast cancer of
+            unknown TNBC status under a model that tracks TNBC and nonTNBC separately).
+            The liability assigner then uses the sum of the candidates' affected rows.
         """
         ...
 
@@ -238,7 +243,8 @@ class LiabilityAssigner(Protocol):
         """Return the zero-based liability class index for *member*.
 
         For affected members: matches the disease row for the member's
-        primary canonical phenotype and age-at-diagnosis band.
+        primary canonical phenotype and age-at-diagnosis band; if the phenotype
+        model returns several candidates, the composite class (sum of their rows).
         For unaffected members: matches the unaffected row for sex and
         age-last-contact band.
         For sex="U" members: returns the uninformative slot index; logs warning.
