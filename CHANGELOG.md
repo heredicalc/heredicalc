@@ -5,6 +5,22 @@ All notable changes to HerediCalc are documented here.
 This file is auto-generated from Conventional Commits via
 [git-cliff](https://github.com/orhun/git-cliff).
 
+## [4.5.0] — 2026-09-13
+
+### Added
+- Composite liability classes for affections that are one of several tracked
+  phenotypes. A phenotype model may now return a sequence of canonical phenotypes
+  from `map_raw_affection` ("exactly one of these, subtype unknown", e.g. a breast
+  cancer of unknown TNBC status under a model that tracks TNBC and nonTNBC
+  separately). `victor_standard` then appends a composite row to the penetrance
+  table — the column-wise sum of the candidates' affected rows for the member's sex
+  and age band, i.e. the exact marginalisation over the unknown subtype — and
+  assigns the member to it. The row is an affected class, so the 4.4.0 affected-flag
+  contract passes such members to `segregatr` as affected. Additive: models that keep
+  returning a single phenotype or `None` are unchanged, `.` members stay
+  affection-unknown, and a composite without penetrance data raises
+  `ZeroPenetranceError` like a single class.
+
 ## [4.4.0] — 2026-09-13
 
 ### Breaking
