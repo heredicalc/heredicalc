@@ -5,6 +5,22 @@ All notable changes to HerediCalc are documented here.
 This file is auto-generated from Conventional Commits via
 [git-cliff](https://github.com/orhun/git-cliff).
 
+## [4.6.0] — 2026-09-13
+
+### Breaking
+- No silent age for unaffected members any more. `victor_standard` used to assume
+  `age_last_contact = 99` when an unaffected member had no age — a study assumption
+  taken by the tool. The assumption now has to be stated in the run configuration
+  via `plugins.params.unaffected_unknown_age`: `uninformative` (the slot already used
+  for unknown-sex members, all genotype penetrances equal) or a fixed age. Without
+  the key an unaffected member without age raises
+  `heredicalc.core.exceptions.UnknownAgeError` (with `individual_id`) instead of
+  yielding a result; an invalid value raises `ValueError`. Callers that relied on
+  the old default reactivate it deliberately with `unaffected_unknown_age: 99`.
+  Members with a known age and affected members are unchanged; the rule also
+  applies to members whose affection the phenotype model does not track (they take
+  the unaffected path since 4.4.0).
+
 ## [4.5.0] — 2026-09-13
 
 ### Added
