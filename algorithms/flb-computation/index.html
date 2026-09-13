@@ -979,6 +979,17 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#the-affected-flag-follows-the-liability-class" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Affected Flag Follows the Liability Class
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#affected-members-without-penetrance-data" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1553,7 +1564,7 @@ compatibility with the reference implementation.</p>
 </tr>
 <tr>
 <td><code>is_affected</code></td>
-<td>1 / 0</td>
+<td>1 / 0 — follows the assigned liability class (see below)</td>
 </tr>
 <tr>
 <td><code>is_proband</code></td>
@@ -1592,10 +1603,24 @@ On error, temp files are preserved for diagnostics.</p>
 <ul>
 <li><strong>Affected</strong> members: the row for their canonical disease and age-at-diagnosis band</li>
 <li><strong>Unaffected</strong> members: the row for their sex and age-last-contact band</li>
+<li><strong>Members whose affection the phenotype model does not track</strong> (e.g. a
+  non-TNBC breast cancer under a TNBC-only model): the unaffected row for their
+  sex and age-last-contact band — they count as free of the tracked phenotype</li>
 <li><strong>Unknown-sex</strong> members: the uninformative slot (all genotype penetrances equal)</li>
 </ul>
 <p>The <code>victor_standard</code> assigner implements this matching. The zero-based index
 is passed to <code>segregatr</code> as the <code>liability_class</code> column.</p>
+<h3 id="the-affected-flag-follows-the-liability-class">The Affected Flag Follows the Liability Class<a class="headerlink" href="#the-affected-flag-follows-the-liability-class" title="Permanent link">&para;</a></h3>
+<p><code>segregatr</code> uses the penetrance <code>p</code> of a member's class when the member is
+affected and <code>1 - p</code> when unaffected. The affected flag HerediCalc passes to R
+is therefore derived from the <em>assigned class</em>, not from the raw pedigree: a
+member is passed as affected only if the pedigree marks them affected <strong>and</strong>
+their liability class is an affected class. A member with an untracked
+affection sits in an unaffected class and is passed as unaffected, exactly like
+an <code>unaff</code> member of the same age; <code>.</code> (affection unknown) is still passed as
+unknown. Before v4.4.0 the raw pedigree flag was passed through, so such
+members were scored with the cumulative risk of the tracked phenotype as if
+they were cases of it — a bias in favour of the causal hypothesis for carriers.</p>
 <h3 id="affected-members-without-penetrance-data">Affected Members Without Penetrance Data<a class="headerlink" href="#affected-members-without-penetrance-data" title="Permanent link">&para;</a></h3>
 <p>A penetrance model can legitimately have no data for a subgroup. For example,
 when the incidence source and RR model only cover women, VICTOR emits male rows
@@ -1618,7 +1643,9 @@ known, the <code>pedigree_id</code>:</p>
 </ul>
 <p>The check applies to any group without penetrance data, not only to sex: it
 fires whenever no genotype gives the observed affection a defined, non-zero
-probability. To compute an FLB for such a pedigree, supply penetrance data for
+probability. It uses the same affected status as the hand-off to R: a member
+with an untracked affection in an all-zero unaffected class is passed as
+unaffected and does not trigger it. To compute an FLB for such a pedigree, supply penetrance data for
 the group (incidence and RR rows) or exclude the affected member's family.</p>
 <hr />
 <h2 id="allele-frequency">Allele Frequency<a class="headerlink" href="#allele-frequency" title="Permanent link">&para;</a></h2>

@@ -1656,7 +1656,7 @@ Built-in: <strong>victor_standard</strong>.</p>
 <tbody>
 <tr>
 <td><code>assign(member, penetrance_output, phenotype_model, params)</code></td>
-<td>Zero-based class index; raise <code>ZeroPenetranceError</code> if an affected member's class has no penetrance data</td>
+<td>Zero-based class index; an affection the phenotype model does not track maps to the unaffected class; raise <code>ZeroPenetranceError</code> if an affected member's class has no penetrance data</td>
 </tr>
 </tbody>
 </table>
@@ -1672,7 +1672,7 @@ Built-in: <strong>victor_standard</strong>.</p>
 <tbody>
 <tr>
 <td><code>compute(pedigree, penetrance_output, liability_map, allele_freq, params)</code></td>
-<td>FLB float; propagate <code>ZeroPenetranceError</code> instead of returning <code>NaN</code></td>
+<td>FLB float; the affected status handed to the engine follows the assigned class (affected only if the pedigree says so and the class is an affected class); propagate <code>ZeroPenetranceError</code> instead of returning <code>NaN</code></td>
 </tr>
 </tbody>
 </table>
