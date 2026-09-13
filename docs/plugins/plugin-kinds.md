@@ -29,7 +29,7 @@ Maps raw affection codes to canonical disease categories. Built-in: **hbopc**.
 | Method | Contract |
 |--------|---------|
 | `canonical_phenotypes()` | Ordered list of tracked canonical phenotype names |
-| `map_raw_affection(raw)` | Raw pedigree code → canonical name or None |
+| `map_raw_affection(raw)` | Raw pedigree code → canonical name, None (not tracked), or a sequence of tracked names ("one of these, subtype unknown" → composite liability class) |
 
 The optional `ICDMappablePhenotypeModel` extension adds `map_icd(icd_code)`.
 
@@ -89,7 +89,7 @@ Built-in: **victor_standard**.
 
 | Method | Contract |
 |--------|---------|
-| `assign(member, penetrance_output, phenotype_model, params)` | Zero-based class index; an affection the phenotype model does not track maps to the unaffected class; raise `ZeroPenetranceError` if an affected member's class has no penetrance data |
+| `assign(member, penetrance_output, phenotype_model, params)` | Zero-based class index; an affection the phenotype model does not track maps to the unaffected class; an affection mapped to several tracked phenotypes maps to a composite class (column-wise sum of the candidates' affected rows, appended to the table); raise `ZeroPenetranceError` if an affected member's class has no penetrance data |
 
 ### `flb_calculator`
 

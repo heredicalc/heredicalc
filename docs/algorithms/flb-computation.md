@@ -93,10 +93,39 @@ Every pedigree member is assigned a **liability class index** by the
 - **Members whose affection the phenotype model does not track** (e.g. a
   non-TNBC breast cancer under a TNBC-only model): the unaffected row for their
   sex and age-last-contact band — they count as free of the tracked phenotype
+- **Members whose affection is one of several tracked phenotypes** (subtype
+  unknown): a composite class, see below
 - **Unknown-sex** members: the uninformative slot (all genotype penetrances equal)
 
 The `victor_standard` assigner implements this matching. The zero-based index
 is passed to `segregatr` as the `liability_class` column.
+
+### Affections That Are One of Several Tracked Phenotypes
+
+A member can be known to be affected while the exact tracked phenotype is not:
+a breast cancer whose TNBC status was never recorded, under a model that tracks
+TNBC and nonTNBC separately. Picking one row would bias the result in a fixed
+direction; marking the member `.` would discard the fact that they are affected.
+
+A phenotype model may therefore map such an affection to a **sequence** of
+tracked phenotypes ("exactly one of these"). `victor_standard` then builds a
+**composite liability class**: for the member's sex and age band it takes the
+affected row of every candidate and adds the penetrances column-wise
+(`nc`, `het`, `hom` separately). Because the candidate events are mutually
+exclusive, the sum is exactly the probability that the member has one of them
+given the genotype — the marginalisation over the unknown subtype, not an
+approximation, since the likelihood factorises over members once genotypes are
+fixed. The composite row is appended to the penetrance table on first use
+(phenotype name `A|B`, sorted), reused for later members of the same sex and
+band, and reaches `segregatr` through the penetrance TSV like any other class.
+
+The composite row carries `is_affected = True`, so the affected flag passed to
+R (next section) is `1` for such members. A sequence of one phenotype behaves
+exactly like that single phenotype; an empty sequence like `None`. Members
+with a completely unknown phenotype (`.`) are untouched: they never enter this
+path and remain affection-unknown for `segregatr`. If every candidate row is
+zero for the member's group, the composite has no penetrance either and
+`ZeroPenetranceError` is raised as for a single class.
 
 ### The Affected Flag Follows the Liability Class
 
