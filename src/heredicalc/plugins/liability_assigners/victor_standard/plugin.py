@@ -88,7 +88,7 @@ def _match_index(member: PedigreeMember, table: PenetranceTable, phenotype_model
         if canonical is None:
             logger.warning(
                 "Member %s has affection %r not mapped to a canonical phenotype; "
-                "treating as unaffected for liability assignment.",
+                "treated as unaffected (liability class and affected status for the FLB).",
                 member.individual_id,
                 raw_pheno,
             )
