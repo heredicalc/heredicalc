@@ -87,3 +87,29 @@ class ZeroPenetranceError(HerediCalcError):
         if reason:
             msg += f": {reason}"
         super().__init__(msg)
+
+
+class UnknownAgeError(HerediCalcError):
+    """Raised when an unaffected member has no age and no policy says how to treat that."""
+
+    PARAM = "unaffected_unknown_age"
+
+    def __init__(
+        self,
+        individual_id: int,
+        reason: str = "",
+        pedigree_id: str | None = None,
+    ) -> None:
+        self.individual_id = individual_id
+        self.reason = reason
+        self.pedigree_id = pedigree_id
+        where = f"member {individual_id}"
+        if pedigree_id is not None:
+            where += f" of pedigree {pedigree_id!r}"
+        msg = (
+            f"Unaffected {where} has no age_last_contact and params[{self.PARAM!r}] is not "
+            "set; set it to 'uninformative' or to a fixed age (e.g. 99)"
+        )
+        if reason:
+            msg += f": {reason}"
+        super().__init__(msg)

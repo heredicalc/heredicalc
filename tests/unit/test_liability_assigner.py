@@ -7,7 +7,7 @@ import math
 import pandas as pd
 import pytest
 
-from heredicalc.core.exceptions import ZeroPenetranceError
+from heredicalc.core.exceptions import UnknownAgeError, ZeroPenetranceError
 from heredicalc.core.models.pedigree import Affection, PedigreeMember
 from heredicalc.core.models.penetrance import PenetranceRow, PenetranceTable
 from heredicalc.plugins.liability_assigners.victor_standard.plugin import (
@@ -242,3 +242,69 @@ def test_composite_candidate_without_row_raises_value_error() -> None:
     table.rows = [r for r in table.rows if r.phenotype != _OTHER]
     with pytest.raises(ValueError, match="No penetrance row"):
         _assign_multi(_member(1, "F", 30, "BC_any"), table)
+
+
+# --- unaffected members without age: no silent 99 any more ------------------------------
+
+
+def _unaffected(individual_id: int, sex: str, age: int | None) -> PedigreeMember:
+    return PedigreeMember(individual_id=individual_id, sex=sex, age_last_contact=age)
+
+
+def _assign_params(member: PedigreeMember, table: PenetranceTable, params: dict) -> int:
+    return VictorStandardLiabilityAssigner().assign(member, table, _PhenotypeModel(), params)
+
+
+def test_unaffected_without_age_and_without_policy_raises() -> None:
+    with pytest.raises(UnknownAgeError) as info:
+        _assign_params(_unaffected(7, "F", None), _table(), {})
+    assert info.value.individual_id == 7
+    assert "unaffected_unknown_age" in str(info.value)
+
+
+def test_unaffected_without_age_uninformative_policy_uses_the_sex_u_slot() -> None:
+    table = _table()
+    idx = _assign_params(
+        _unaffected(7, "F", None), table, {"unaffected_unknown_age": "uninformative"}
+    )
+    u_member = PedigreeMember(individual_id=8, sex="U", age_last_contact=None)
+    assert idx == _assign_params(u_member, table, {})
+    row = table.rows[idx]
+    assert row.penetrance_nc == row.penetrance_het == row.penetrance_hom
+
+
+def test_unaffected_without_age_fixed_policy_reproduces_the_old_behaviour() -> None:
+    table = _table()
+    idx = _assign_params(_unaffected(7, "F", None), table, {"unaffected_unknown_age": 99})
+    assert idx == _assign_params(_unaffected(9, "F", 99), table, {})
+    assert table.rows[idx].phenotype == "unaffected" and table.rows[idx].age_end == 99
+    idx_young = _assign_params(_unaffected(7, "F", None), table, {"unaffected_unknown_age": 30})
+    assert idx_young == _assign_params(_unaffected(9, "F", 30), table, {})
+
+
+@pytest.mark.parametrize(
+    "params", [{}, {"unaffected_unknown_age": "uninformative"}, {"unaffected_unknown_age": 99}]
+)
+def test_known_age_is_unchanged_by_the_policy(params: dict) -> None:
+    table = _table()
+    assert _assign_params(_unaffected(1, "F", 30), table, params) == 1
+    assert _assign_params(_unaffected(2, "F", 60), table, params) == 3
+    assert _assign_params(_affected(3, "F", 45), table, params) == 0  # affected path untouched
+
+
+def test_invalid_policy_raises_value_error() -> None:
+    with pytest.raises(ValueError, match="unaffected_unknown_age"):
+        _assign_params(_unaffected(7, "F", None), _table(), {"unaffected_unknown_age": "guess"})
+    with pytest.raises(ValueError, match="unaffected_unknown_age"):
+        _assign_params(_unaffected(7, "F", None), _table(), {"unaffected_unknown_age": True})
+
+
+def test_untracked_affection_without_age_follows_the_same_policy() -> None:
+    """The untracked-affection path is an unaffected path too (v4.4.0) and must not assume 99."""
+    member = PedigreeMember(
+        individual_id=7, sex="F", age_last_contact=None,
+        affections=[Affection(phenotype=".", age_at_diagnosis=None)],
+    )  # fmt: skip
+    with pytest.raises(UnknownAgeError):
+        _assign_params(member, _table(), {})
+    assert _assign_params(member, _table(), {"unaffected_unknown_age": 99}) == 3
