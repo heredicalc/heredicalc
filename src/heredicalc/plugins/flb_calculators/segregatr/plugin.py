@@ -10,8 +10,8 @@ from pathlib import Path
 from typing import Any
 
 from heredicalc.core.exceptions import SegregaError, ZeroPenetranceError
-from heredicalc.core.models.pedigree import Pedigree
-from heredicalc.core.models.penetrance import PenetranceTable
+from heredicalc.core.models.pedigree import Pedigree, PedigreeMember
+from heredicalc.core.models.penetrance import PenetranceRow, PenetranceTable
 from heredicalc.core.models.plugin import PluginMeta
 
 _SCRIPT = _files(__package__) / "compute_flb.R"
@@ -58,6 +58,10 @@ class SegregatrFLBCalculator:
         :raises SegregaError: If Rscript returns a non-zero exit code.
         :raises ZeroPenetranceError: If an affected member's liability class has no
             penetrance data; the FLB would be undefined (0/0).
+
+        The affected status handed to R follows the assigned liability class: a member
+        whose class is an unaffected class (e.g. an affection the phenotype model does
+        not track) is passed as unaffected, whatever the raw pedigree says.
         """
         table: PenetranceTable = penetrance_output
         ped_path: Path | None = None
@@ -65,7 +69,7 @@ class SegregatrFLBCalculator:
 
         try:
             _check_affected_penetrance(pedigree, table, liability_map)
-            ped_path = _write_pedigree_tsv(pedigree, liability_map)
+            ped_path = _write_pedigree_tsv(pedigree, table, liability_map)
             pen_path = _write_penetrance_tsv(table)
 
             script_path = str(_SCRIPT)
@@ -112,14 +116,19 @@ class SegregatrFLBCalculator:
             ) from exc
 
 
+def _is_affected_for_flb(member: PedigreeMember, row: PenetranceRow) -> bool:
+    """Affected only if the raw pedigree says so AND the assigned class is an affected class."""
+    return member.is_affected and row.is_affected
+
+
 def _check_affected_penetrance(
     pedigree: Pedigree, table: PenetranceTable, liability_map: dict[int, int]
 ) -> None:
     """Reject affected members in classes without penetrance data before calling R."""
     for m in pedigree.members:
-        if not m.is_affected:
-            continue
         row = table.rows[liability_map[m.individual_id]]
+        if not _is_affected_for_flb(m, row):
+            continue
         if not row.has_penetrance:
             raise ZeroPenetranceError(
                 m.individual_id,
@@ -129,7 +138,9 @@ def _check_affected_penetrance(
             )
 
 
-def _write_pedigree_tsv(pedigree: Pedigree, liability_map: dict[int, int]) -> Path:
+def _write_pedigree_tsv(
+    pedigree: Pedigree, table: PenetranceTable, liability_map: dict[int, int]
+) -> Path:
     """Write pedigree members to a temp TSV for the R script."""
     fd, path_str = tempfile.mkstemp(suffix="_pedigree.tsv", prefix="heredicalc_")
     path = Path(path_str)
@@ -138,13 +149,13 @@ def _write_pedigree_tsv(pedigree: Pedigree, liability_map: dict[int, int]) -> Pa
     ]
     for m in pedigree.members:
         sex_code = 1 if m.sex == "M" else (2 if m.sex == "F" else 1)
-        is_affected = 1 if m.is_affected else 0
+        liability_class = liability_map[m.individual_id]
+        is_affected = 1 if _is_affected_for_flb(m, table.rows[liability_class]) else 0
         is_proband = 1 if m.is_proband else 0
         affection_known = 1 if m.affection_known else 0
         genotype = m.genotype if m.genotype else "NA"
         father_id = m.father_id if m.father_id is not None else 0
         mother_id = m.mother_id if m.mother_id is not None else 0
-        liability_class = liability_map[m.individual_id]
         lines.append(
             f"{m.individual_id}\t{father_id}\t{mother_id}\t{sex_code}\t"
             f"{is_affected}\t{is_proband}\t{affection_known}\t{genotype}\t{liability_class}"

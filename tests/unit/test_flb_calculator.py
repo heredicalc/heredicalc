@@ -126,3 +126,56 @@ def test_other_failures_are_still_wrapped_in_segrega_error(monkeypatch) -> None:
         SegregatrFLBCalculator().compute(
             _pedigree(son_affected=False), _table(), incomplete_map, 0.001, {}
         )
+
+
+def _capture_pedigree_tsv(monkeypatch) -> list[dict[str, str]]:
+    """Run the calculator with a fake Rscript and return the pedigree TSV rows it received."""
+    rows: list[dict[str, str]] = []
+
+    def _fake_run(cmd, **kwargs):
+        with open(cmd[3], encoding="utf-8") as fh:
+            header = fh.readline().rstrip("\n").split("\t")
+            rows.extend(
+                dict(zip(header, line.rstrip("\n").split("\t"), strict=True)) for line in fh
+            )
+        return subprocess.CompletedProcess(cmd, 0, stdout='{"flb": 1.0}\n', stderr="")
+
+    monkeypatch.setattr(subprocess, "run", _fake_run)
+    return rows
+
+
+def test_affected_flag_follows_the_assigned_liability_class(monkeypatch) -> None:
+    """An affection the phenotype model does not track leaves the member in an unaffected
+    class; the flag handed to R must then say unaffected, not the raw pedigree status."""
+    rows = _capture_pedigree_tsv(monkeypatch)
+    # member 2 is affected in the pedigree but was assigned the female *unaffected* class
+    liability_map = {1: _M_UNAFFECTED, 2: _F_UNAFFECTED, 3: _M_UNAFFECTED}
+    SegregatrFLBCalculator().compute(
+        _pedigree(son_affected=False), _table(), liability_map, 0.001, {}
+    )
+    by_id = {r["individual_id"]: r for r in rows}
+    assert by_id["2"]["is_affected"] == "0"
+    assert by_id["2"]["affection_known"] == "1"
+    assert by_id["2"]["liability_class"] == str(_F_UNAFFECTED)
+
+
+def test_tracked_affection_is_still_passed_as_affected(monkeypatch) -> None:
+    rows = _capture_pedigree_tsv(monkeypatch)
+    SegregatrFLBCalculator().compute(
+        _pedigree(son_affected=False), _table(), _liability_map(son_affected=False), 0.001, {}
+    )
+    by_id = {r["individual_id"]: r for r in rows}
+    assert by_id["2"]["is_affected"] == "1" and by_id["2"]["liability_class"] == str(_F_AFFECTED)
+    assert by_id["1"]["is_affected"] == "0" and by_id["3"]["is_affected"] == "0"
+
+
+def test_untracked_affection_in_zero_penetrance_class_does_not_raise(monkeypatch) -> None:
+    """A male with an untracked affection sits in the (all-zero) male unaffected class: he is
+    passed as unaffected and contributes a factor of 1, so the guard must not fire."""
+    rows = _capture_pedigree_tsv(monkeypatch)
+    liability_map = {1: _M_UNAFFECTED, 2: _F_AFFECTED, 3: _M_UNAFFECTED}
+    flb = SegregatrFLBCalculator().compute(
+        _pedigree(son_affected=True), _table(), liability_map, 0.001, {}
+    )
+    assert flb == 1.0
+    assert {r["individual_id"]: r["is_affected"] for r in rows}["3"] == "0"
