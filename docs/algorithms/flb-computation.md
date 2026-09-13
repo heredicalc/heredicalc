@@ -89,7 +89,8 @@ Every pedigree member is assigned a **liability class index** by the
 `liability_assigner` plugin. The index maps to a row in the penetrance table:
 
 - **Affected** members: the row for their canonical disease and age-at-diagnosis band
-- **Unaffected** members: the row for their sex and age-last-contact band
+- **Unaffected** members: the row for their sex and age-last-contact band; without an
+  age the study's `unaffected_unknown_age` policy decides (see below)
 - **Members whose affection the phenotype model does not track** (e.g. a
   non-TNBC breast cancer under a TNBC-only model): the unaffected row for their
   sex and age-last-contact band — they count as free of the tracked phenotype
@@ -99,6 +100,33 @@ Every pedigree member is assigned a **liability class index** by the
 
 The `victor_standard` assigner implements this matching. The zero-based index
 is passed to `segregatr` as the `liability_class` column.
+
+### Unaffected Members Without Age
+
+An unaffected member whose `age_last_contact` is unknown has no natural
+liability class: "unaffected up to an unknown age" is not an observation the
+penetrance table can score. Up to v4.5.0 `victor_standard` silently assumed
+age 99 — a study assumption taken by the tool. Since v4.6.0 the study has to
+state it in the run configuration, through the same `params` mechanism that
+selects the incidence view or the age bands:
+
+```yaml
+plugins:
+  params:
+    unaffected_unknown_age: uninformative   # or a fixed age, e.g. 99
+```
+
+- `uninformative` assigns the uninformative slot already used for unknown-sex
+  members (all genotype penetrances equal): the member contributes nothing to
+  the FLB but still transmits.
+- A non-negative integer assigns the unaffected row of that age; `99`
+  reproduces the pre-4.6.0 behaviour for studies that want it deliberately.
+- Without the key, `heredicalc.core.exceptions.UnknownAgeError` is raised
+  (carrying the `individual_id`); an invalid value raises `ValueError`.
+
+The rule applies to every unaffected assignment, including members whose
+affection the phenotype model does not track. Members with a known age and
+affected members are unaffected by it.
 
 ### Affections That Are One of Several Tracked Phenotypes
 
