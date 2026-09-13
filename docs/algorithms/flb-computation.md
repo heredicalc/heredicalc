@@ -57,7 +57,7 @@ Two temporary TSV files are written for each computation:
 | `father_id` | Father's ID, or 0 for founders |
 | `mother_id` | Mother's ID, or 0 for founders |
 | `sex_code` | 1 = male, 2 = female |
-| `is_affected` | 1 / 0 |
+| `is_affected` | 1 / 0 — follows the assigned liability class (see below) |
 | `is_proband` | 1 / 0 |
 | `affection_known` | 1 / 0 |
 | `genotype` | `"het"`, `"hom"`, `"nc"`, or `"NA"` |
@@ -90,10 +90,26 @@ Every pedigree member is assigned a **liability class index** by the
 
 - **Affected** members: the row for their canonical disease and age-at-diagnosis band
 - **Unaffected** members: the row for their sex and age-last-contact band
+- **Members whose affection the phenotype model does not track** (e.g. a
+  non-TNBC breast cancer under a TNBC-only model): the unaffected row for their
+  sex and age-last-contact band — they count as free of the tracked phenotype
 - **Unknown-sex** members: the uninformative slot (all genotype penetrances equal)
 
 The `victor_standard` assigner implements this matching. The zero-based index
 is passed to `segregatr` as the `liability_class` column.
+
+### The Affected Flag Follows the Liability Class
+
+`segregatr` uses the penetrance `p` of a member's class when the member is
+affected and `1 - p` when unaffected. The affected flag HerediCalc passes to R
+is therefore derived from the *assigned class*, not from the raw pedigree: a
+member is passed as affected only if the pedigree marks them affected **and**
+their liability class is an affected class. A member with an untracked
+affection sits in an unaffected class and is passed as unaffected, exactly like
+an `unaff` member of the same age; `.` (affection unknown) is still passed as
+unknown. Before v4.4.0 the raw pedigree flag was passed through, so such
+members were scored with the cumulative risk of the tracked phenotype as if
+they were cases of it — a bias in favour of the causal hypothesis for carriers.
 
 ### Affected Members Without Penetrance Data
 
@@ -119,7 +135,9 @@ known, the `pedigree_id`:
 
 The check applies to any group without penetrance data, not only to sex: it
 fires whenever no genotype gives the observed affection a defined, non-zero
-probability. To compute an FLB for such a pedigree, supply penetrance data for
+probability. It uses the same affected status as the hand-off to R: a member
+with an untracked affection in an all-zero unaffected class is passed as
+unaffected and does not trigger it. To compute an FLB for such a pedigree, supply penetrance data for
 the group (incidence and RR rows) or exclude the affected member's family.
 
 ---

@@ -89,7 +89,7 @@ Built-in: **victor_standard**.
 
 | Method | Contract |
 |--------|---------|
-| `assign(member, penetrance_output, phenotype_model, params)` | Zero-based class index; raise `ZeroPenetranceError` if an affected member's class has no penetrance data |
+| `assign(member, penetrance_output, phenotype_model, params)` | Zero-based class index; an affection the phenotype model does not track maps to the unaffected class; raise `ZeroPenetranceError` if an affected member's class has no penetrance data |
 
 ### `flb_calculator`
 
@@ -97,7 +97,7 @@ Computes the FLB value. Built-in: **segregatr** (R subprocess).
 
 | Method | Contract |
 |--------|---------|
-| `compute(pedigree, penetrance_output, liability_map, allele_freq, params)` | FLB float; propagate `ZeroPenetranceError` instead of returning `NaN` |
+| `compute(pedigree, penetrance_output, liability_map, allele_freq, params)` | FLB float; the affected status handed to the engine follows the assigned class (affected only if the pedigree says so and the class is an affected class); propagate `ZeroPenetranceError` instead of returning `NaN` |
 
 ---
 
