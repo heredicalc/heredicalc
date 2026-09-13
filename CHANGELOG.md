@@ -5,6 +5,29 @@ All notable changes to HerediCalc are documented here.
 This file is auto-generated from Conventional Commits via
 [git-cliff](https://github.com/orhun/git-cliff).
 
+## [4.4.0] — 2026-09-13
+
+### Breaking
+- The affected status handed to the FLB engine now follows the assigned liability
+  class instead of the raw pedigree flag. A member whose affection the active
+  phenotype model does not track (for example a non-TNBC breast cancer under a
+  TNBC-only model) is assigned the unaffected class by `victor_standard` and is
+  now also passed to `segregatr` as unaffected. Previously the raw flag was
+  passed through, so `segregatr` scored such members with the cumulative
+  penetrance of the tracked phenotype as if they were cases of it — a directed
+  bias (a factor above 1 for every carrier, below 1 for every non-carrier).
+  Results of earlier runs with phenotype models that do not track every affection
+  present in a pedigree can change; that is the purpose of the fix. Members with
+  tracked affections and `.` (affection unknown) members are unaffected by the
+  change.
+
+### Fixed
+- `segregatr` derives `is_affected` per member from the assigned `PenetranceRow`
+  (`pedigree affected AND row.is_affected`); the zero-penetrance guard uses the
+  same status, so an untracked affection in an all-zero unaffected class no
+  longer raises. The `ZeroPenetranceError` contract of 4.3.0 is otherwise
+  unchanged: the two guards do not overlap for tracked affections.
+
 ## [4.3.0] — 2026-09-12
 
 ### Breaking
