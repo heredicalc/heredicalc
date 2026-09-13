@@ -979,6 +979,17 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#affections-that-are-one-of-several-tracked-phenotypes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Affections That Are One of Several Tracked Phenotypes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#the-affected-flag-follows-the-liability-class" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1606,10 +1617,35 @@ On error, temp files are preserved for diagnostics.</p>
 <li><strong>Members whose affection the phenotype model does not track</strong> (e.g. a
   non-TNBC breast cancer under a TNBC-only model): the unaffected row for their
   sex and age-last-contact band — they count as free of the tracked phenotype</li>
+<li><strong>Members whose affection is one of several tracked phenotypes</strong> (subtype
+  unknown): a composite class, see below</li>
 <li><strong>Unknown-sex</strong> members: the uninformative slot (all genotype penetrances equal)</li>
 </ul>
 <p>The <code>victor_standard</code> assigner implements this matching. The zero-based index
 is passed to <code>segregatr</code> as the <code>liability_class</code> column.</p>
+<h3 id="affections-that-are-one-of-several-tracked-phenotypes">Affections That Are One of Several Tracked Phenotypes<a class="headerlink" href="#affections-that-are-one-of-several-tracked-phenotypes" title="Permanent link">&para;</a></h3>
+<p>A member can be known to be affected while the exact tracked phenotype is not:
+a breast cancer whose TNBC status was never recorded, under a model that tracks
+TNBC and nonTNBC separately. Picking one row would bias the result in a fixed
+direction; marking the member <code>.</code> would discard the fact that they are affected.</p>
+<p>A phenotype model may therefore map such an affection to a <strong>sequence</strong> of
+tracked phenotypes ("exactly one of these"). <code>victor_standard</code> then builds a
+<strong>composite liability class</strong>: for the member's sex and age band it takes the
+affected row of every candidate and adds the penetrances column-wise
+(<code>nc</code>, <code>het</code>, <code>hom</code> separately). Because the candidate events are mutually
+exclusive, the sum is exactly the probability that the member has one of them
+given the genotype — the marginalisation over the unknown subtype, not an
+approximation, since the likelihood factorises over members once genotypes are
+fixed. The composite row is appended to the penetrance table on first use
+(phenotype name <code>A|B</code>, sorted), reused for later members of the same sex and
+band, and reaches <code>segregatr</code> through the penetrance TSV like any other class.</p>
+<p>The composite row carries <code>is_affected = True</code>, so the affected flag passed to
+R (next section) is <code>1</code> for such members. A sequence of one phenotype behaves
+exactly like that single phenotype; an empty sequence like <code>None</code>. Members
+with a completely unknown phenotype (<code>.</code>) are untouched: they never enter this
+path and remain affection-unknown for <code>segregatr</code>. If every candidate row is
+zero for the member's group, the composite has no penetrance either and
+<code>ZeroPenetranceError</code> is raised as for a single class.</p>
 <h3 id="the-affected-flag-follows-the-liability-class">The Affected Flag Follows the Liability Class<a class="headerlink" href="#the-affected-flag-follows-the-liability-class" title="Permanent link">&para;</a></h3>
 <p><code>segregatr</code> uses the penetrance <code>p</code> of a member's class when the member is
 affected and <code>1 - p</code> when unaffected. The affected flag HerediCalc passes to R

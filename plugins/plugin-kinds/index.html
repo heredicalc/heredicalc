@@ -1546,7 +1546,7 @@ required.</p>
 </tr>
 <tr>
 <td><code>map_raw_affection(raw)</code></td>
-<td>Raw pedigree code → canonical name or None</td>
+<td>Raw pedigree code → canonical name, None (not tracked), or a sequence of tracked names ("one of these, subtype unknown" → composite liability class)</td>
 </tr>
 </tbody>
 </table>
@@ -1656,7 +1656,7 @@ Built-in: <strong>victor_standard</strong>.</p>
 <tbody>
 <tr>
 <td><code>assign(member, penetrance_output, phenotype_model, params)</code></td>
-<td>Zero-based class index; an affection the phenotype model does not track maps to the unaffected class; raise <code>ZeroPenetranceError</code> if an affected member's class has no penetrance data</td>
+<td>Zero-based class index; an affection the phenotype model does not track maps to the unaffected class; an affection mapped to several tracked phenotypes maps to a composite class (column-wise sum of the candidates' affected rows, appended to the table); raise <code>ZeroPenetranceError</code> if an affected member's class has no penetrance data</td>
 </tr>
 </tbody>
 </table>
