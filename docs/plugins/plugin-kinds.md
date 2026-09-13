@@ -89,7 +89,7 @@ Built-in: **victor_standard**.
 
 | Method | Contract |
 |--------|---------|
-| `assign(member, penetrance_output, phenotype_model, params)` | Zero-based class index; an affection the phenotype model does not track maps to the unaffected class; an affection mapped to several tracked phenotypes maps to a composite class (column-wise sum of the candidates' affected rows, appended to the table); raise `ZeroPenetranceError` if an affected member's class has no penetrance data |
+| `assign(member, penetrance_output, phenotype_model, params)` | Zero-based class index; an affection the phenotype model does not track maps to the unaffected class; an affection mapped to several tracked phenotypes maps to a composite class (column-wise sum of the candidates' affected rows, appended to the table); an unaffected member without age follows `params["unaffected_unknown_age"]` (`uninformative` or a fixed age) and raises `UnknownAgeError` when it is unset; raise `ZeroPenetranceError` if an affected member's class has no penetrance data |
 
 ### `flb_calculator`
 
