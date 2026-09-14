@@ -979,6 +979,17 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#unaffected-members-without-age" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Unaffected Members Without Age
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#affections-that-are-one-of-several-tracked-phenotypes" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1613,7 +1624,8 @@ On error, temp files are preserved for diagnostics.</p>
 <code>liability_assigner</code> plugin. The index maps to a row in the penetrance table:</p>
 <ul>
 <li><strong>Affected</strong> members: the row for their canonical disease and age-at-diagnosis band</li>
-<li><strong>Unaffected</strong> members: the row for their sex and age-last-contact band</li>
+<li><strong>Unaffected</strong> members: the row for their sex and age-last-contact band; without an
+  age the study's <code>unaffected_unknown_age</code> policy decides (see below)</li>
 <li><strong>Members whose affection the phenotype model does not track</strong> (e.g. a
   non-TNBC breast cancer under a TNBC-only model): the unaffected row for their
   sex and age-last-contact band — they count as free of the tracked phenotype</li>
@@ -1623,6 +1635,29 @@ On error, temp files are preserved for diagnostics.</p>
 </ul>
 <p>The <code>victor_standard</code> assigner implements this matching. The zero-based index
 is passed to <code>segregatr</code> as the <code>liability_class</code> column.</p>
+<h3 id="unaffected-members-without-age">Unaffected Members Without Age<a class="headerlink" href="#unaffected-members-without-age" title="Permanent link">&para;</a></h3>
+<p>An unaffected member whose <code>age_last_contact</code> is unknown has no natural
+liability class: "unaffected up to an unknown age" is not an observation the
+penetrance table can score. Up to v4.5.0 <code>victor_standard</code> silently assumed
+age 99 — a study assumption taken by the tool. Since v4.6.0 the study has to
+state it in the run configuration, through the same <code>params</code> mechanism that
+selects the incidence view or the age bands:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">plugins</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">params</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">unaffected_unknown_age</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">uninformative</span><span class="w">   </span><span class="c1"># or a fixed age, e.g. 99</span>
+</code></pre></div>
+<ul>
+<li><code>uninformative</code> assigns the uninformative slot already used for unknown-sex
+  members (all genotype penetrances equal): the member contributes nothing to
+  the FLB but still transmits.</li>
+<li>A non-negative integer assigns the unaffected row of that age; <code>99</code>
+  reproduces the pre-4.6.0 behaviour for studies that want it deliberately.</li>
+<li>Without the key, <code>heredicalc.core.exceptions.UnknownAgeError</code> is raised
+  (carrying the <code>individual_id</code>); an invalid value raises <code>ValueError</code>.</li>
+</ul>
+<p>The rule applies to every unaffected assignment, including members whose
+affection the phenotype model does not track. Members with a known age and
+affected members are unaffected by it.</p>
 <h3 id="affections-that-are-one-of-several-tracked-phenotypes">Affections That Are One of Several Tracked Phenotypes<a class="headerlink" href="#affections-that-are-one-of-several-tracked-phenotypes" title="Permanent link">&para;</a></h3>
 <p>A member can be known to be affected while the exact tracked phenotype is not:
 a breast cancer whose TNBC status was never recorded, under a model that tracks
